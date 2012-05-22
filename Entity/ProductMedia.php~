@@ -1,0 +1,45 @@
+<?php
+namespace kp\MediaBundle\Entity;
+use Sylius\Sandbox\Bundle\AssortmentBundle\Entity\Product as Product;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
+
+
+/**
+ * kp\MediaBundle\Entity\ProductMedia
+ *
+ * @ORM\Table(name="product_media")
+ * @ORM\Entity()
+ */
+class ProductMedia
+{
+
+    /**
+     * @var integer $id
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Sylius\Sandbox\Bundle\AssortmentBundle\Entity\Product", inversedBy="product_media")
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     */
+    protected $product;
+
+     /**
+     * @ORM\OneToOne(targetEntity="\kp\MediaBundle\Entity\Media")
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
+     */
+    protected $media;
+
+    /**
+     * @ORM\Column(name="is_default", type="boolean", nullable=false)
+     */
+    protected $is_default;
+
+
+}

@@ -1,0 +1,15 @@
+kpMediaBundle_index:
+    pattern:  /
+    defaults: { _controller: kpMediaBundle:Backend:index }
+
+kpMediaBundle_upload:
+    pattern:  /create
+    defaults: { _controller: kpMediaBundle:Backend:upload }
+
+kpMediaBundle_delete:
+    pattern: /delete/{id}
+    defaults: { _controller: kpMediaBundle:Backend:delete }
+
+kp_media_internal_list:
+    pattern: /internal/list/{element}
+    defaults: {_controller: 'kp_media.controller_internal:listAction'}

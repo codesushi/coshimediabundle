@@ -1,0 +1,42 @@
+parameters:
+
+    kp_media: 
+        linkmap: 
+            "Sylius\\Sandbox\\Bundle\\AssortmentBundle\\Entity\\Product": "kp\\MediaBundle\\Entity\\ProductMedia"
+        uploader:
+            media_path: uploads
+            www_root: public
+        imager:
+            options:
+                lib: gd
+                thumbnails: 
+                    small: { width: 128, height: 128, dir: 't1' }
+services:
+#    kp_media.example:
+#        class: %kp_media.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    kp_media.imager:
+        class: kp\MediaBundle\Service\Imager
+        arguments: [%kp_media%]
+        
+    kp_media.media_manager:
+        class: kp\MediaBundle\Manager\MediaManager
+        arguments: [@doctrine.orm.default_entity_manager,@kp_media.imager,%kp_media%]
+        calls:
+            - [setKernel , [@kernel]]
+            - [setContainer, [@service_container]]
+    
+    kp_media.thumbnail_extension:
+        class: kp\MediaBundle\Templating\ThumbnailExtension
+        calls:
+            - [setOptions, [%kp_media%]]
+        tags:
+            - { name: twig.extension }
+    kp_media.controller_internal:
+        class: kp\MediaBundle\Controller\InternalController
+        calls: 
+            - [setContainer, [@service_container ]]
+            - [setMediaService, [@kp_media.media_manager]]
+            - [setEntityManager, [@doctrine.orm.default_entity_manager]]
+        

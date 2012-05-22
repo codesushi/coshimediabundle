@@ -1,0 +1,35 @@
+media:
+    pattern:  /
+    defaults: { _controller: "kpMediaBundle:Media:index" }
+
+media_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "kpMediaBundle:Media:show" }
+
+media_new:
+    pattern:  /new
+    defaults: { _controller: "kpMediaBundle:Media:new" }
+
+media_create:
+    pattern:  /create
+    defaults: { _controller: "kpMediaBundle:Media:create" }
+    requirements: { _method: post }
+
+media_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "kpMediaBundle:Media:edit" }
+
+media_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "kpMediaBundle:Media:update" }
+    requirements: { _method: post }
+
+media_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "kpMediaBundle:Media:delete" }
+    requirements: { _method: post }
+
+media_internal_list:
+    pattern: /internal/list
+    defaults: {_controller: 'kp_media.controller_internal:list'}
+
