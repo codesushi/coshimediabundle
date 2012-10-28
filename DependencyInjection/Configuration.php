@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\DependencyInjection;
+namespace Coshi\MediaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('kp_media');
+        $rootNode = $treeBuilder->root('coshi_media');
         $rootNode->children()
             ->arrayNode('linkmap')
                 ->useAttributeAsKey('name')

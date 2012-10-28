@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\DependencyInjection;
+namespace Coshi\MediaBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class kpMediaExtension extends Extension
+class CoshiMediaExtension extends Extension
 {
     /**
      * {@inheritDoc}
@@ -25,13 +25,13 @@ class kpMediaExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-        $loadedConfig = $container->getParameter('kp_media');
+        $loadedConfig = $container->getParameter('coshi_media');
 
         $loadedConfig = $this->setImagerOptions($config, $loadedConfig);
         $loadedConfig = $this->setLinkMap($config, $loadedConfig);
         $config = $this->setUploaderOptions($config, $loadedConfig);
 
-        $container->setParameter('kp_media',$config);
+        $container->setParameter('coshi_media',$config);
     }
 
     public function setLinkMap(array $config, array $loadedConfig)
