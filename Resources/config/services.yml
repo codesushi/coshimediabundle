@@ -1,8 +1,8 @@
 parameters:
 
-    kp_media: 
+    coshi_media: 
         linkmap: 
-            "Sylius\\Sandbox\\Bundle\\AssortmentBundle\\Entity\\Product": "kp\\MediaBundle\\Entity\\ProductMedia"
+            "Sylius\\Sandbox\\Bundle\\AssortmentBundle\\Entity\\Product": "Coshi\\MediaBundle\\Entity\\ProductMedia"
         uploader:
             media_path: uploads
             www_root: public
@@ -12,31 +12,31 @@ parameters:
                 thumbnails: 
                     small: { width: 128, height: 128, dir: 't1' }
 services:
-#    kp_media.example:
-#        class: %kp_media.example.class%
+#    coshi_media.example:
+#        class: %coshi_media.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
 
-    kp_media.imager:
-        class: kp\MediaBundle\Service\Imager
-        arguments: [%kp_media%]
+    coshi_media.imager:
+        class: Coshi\MediaBundle\Service\Imager
+        arguments: [%coshi_media%]
         
-    kp_media.media_manager:
-        class: kp\MediaBundle\Manager\MediaManager
-        arguments: [@doctrine.orm.default_entity_manager,@kp_media.imager,%kp_media%]
+    coshi_media.media_manager:
+        class: Coshi\MediaBundle\Manager\MediaManager
+        arguments: [@doctrine.orm.default_entity_manager,@coshi_media.imager,%coshi_media%]
         calls:
             - [setKernel , [@kernel]]
             - [setContainer, [@service_container]]
     
-    kp_media.thumbnail_extension:
-        class: kp\MediaBundle\Templating\ThumbnailExtension
+    coshi_media.thumbnail_extension:
+        class: Coshi\MediaBundle\Templating\ThumbnailExtension
         calls:
-            - [setOptions, [%kp_media%]]
+            - [setOptions, [%coshi_media%]]
         tags:
             - { name: twig.extension }
-    kp_media.controller_internal:
-        class: kp\MediaBundle\Controller\InternalController
+    coshi_media.controller_internal:
+        class: Coshi\MediaBundle\Controller\InternalController
         calls: 
             - [setContainer, [@service_container ]]
-            - [setMediaService, [@kp_media.media_manager]]
+            - [setMediaService, [@coshi_media.media_manager]]
             - [setEntityManager, [@doctrine.orm.default_entity_manager]]
         

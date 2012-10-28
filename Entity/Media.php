@@ -1,19 +1,19 @@
 <?php
 
-namespace kp\MediaBundle\Entity;
+namespace Coshi\MediaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
-use kp\UserBundle\Entity\User;
-use kp\MediaBundle\Model\MediaInterface;
-use kp\MediaBundle\Model\MediaLinkInterface;
+use Coshi\UserBundle\Entity\User;
+use Coshi\MediaBundle\Model\MediaInterface;
+use Coshi\MediaBundle\Model\MediaLinkInterface;
 
 /**
- * kp\MediaBundle\Entity\Media
+ * Coshi\MediaBundle\Entity\Media
  *
- * @ORM\Table(name="kp_media")
- * @ORM\Entity(repositoryClass="kp\MediaBundle\Entity\MediaRepository")
+ * @ORM\Table(name="coshi_media")
+ * @ORM\Entity(repositoryClass="Coshi\MediaBundle\Entity\MediaRepository")
  */
 class Media implements MediaInterface
 {
@@ -75,9 +75,9 @@ class Media implements MediaInterface
     private $mimetype;
 
     /**
-     * @var kp\UserBunlde\Entity\User $creator
+     * @var Coshi\UserBunlde\Entity\User $creator
      *
-     * @ORM\ManyToOne(targetEntity="\kp\UserBundle\Entity\User", inversedBy="created_media")
+     * @ORM\ManyToOne(targetEntity="\Coshi\UserBundle\Entity\User", inversedBy="created_media")
      * @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
      *
      */
@@ -281,10 +281,10 @@ class Media implements MediaInterface
     /**
      * Set creator
      *
-     * @param kp\UserBundle\Entity\User $creator
+     * @param Coshi\UserBundle\Entity\User $creator
      * @return Media
      */
-    public function setCreator(\kp\UserBundle\Entity\User $creator = null)
+    public function setCreator(\Coshi\UserBundle\Entity\User $creator = null)
     {
         $this->creator = $creator;
         return $this;
@@ -293,7 +293,7 @@ class Media implements MediaInterface
     /**
      * Get creator
      *
-     * @return kp\UserBundle\Entity\User
+     * @return Coshi\UserBundle\Entity\User
      */
     public function getCreator()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\Service;
+namespace Coshi\MediaBundle\Service;
 
 
 use \Imagine\Image\Box;

@@ -4,19 +4,19 @@
 <li>
     <div class="thumbnail">
     <img src="{{ thumbnail(m)}}" />
-    <a href="#" class="btn insertfull" data-full-size="{{ thumbnail(m,false) }}">{{  "media.insertfull" | trans ( {}, 'kpMediaBundle') }}</a>
+    <a href="#" class="btn insertfull" data-full-size="{{ thumbnail(m,false) }}">{{  "media.insertfull" | trans ( {}, 'CoshiMediaBundle') }}</a>
     <a href="#" class="btn insertthumb" 
         data-full-size="{{ thumbnail(m,false) }}"
         data-thumb-size="{{ thumbnail(m) }}"
         >
-        {% trans from 'kpMediaBundle' %}media.insertthumb{%endtrans%}</a>
+        {% trans from 'CoshiMediaBundle' %}media.insertthumb{%endtrans%}</a>
     </div>
 </li>
 {% endfor %}
 </ul>
 
 {% if pager.haveToPaginate() %}
-{{ pagerfanta(pager, 'twitter_bootstrap_translated', {routeName: 'kp_media_internal_list', routeParams: {'element': element }}) }}
+{{ pagerfanta(pager, 'twitter_bootstrap_translated', {routeName: 'coshi_media_internal_list', routeParams: {'element': element }}) }}
 {% endif %}
 </div>
 <script type="text/javascript" >

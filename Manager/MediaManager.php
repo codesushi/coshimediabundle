@@ -1,10 +1,10 @@
 <?php
 
-namespace kp\MediaBundle\Manager;
+namespace Coshi\MediaBundle\Manager;
 
-use \kp\MediaBundle\Entity\Media;
-use \kp\MediaBundle\Entity\ProductMedia;
-use \kp\MediaBundle\Service\Imager;
+use \Coshi\MediaBundle\Entity\Media;
+use \Coshi\MediaBundle\Entity\ProductMedia;
+use \Coshi\MediaBundle\Service\Imager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -90,7 +90,7 @@ class MediaManager
     {
         $this->entityManager = $em;
         $this->imagerService = $imager;
-        $this->repository = $this->entityManager->getRepository('\kp\MediaBundle\Entity\Media');
+        $this->repository = $this->entityManager->getRepository('\Coshi\MediaBundle\Entity\Media');
         $this->options = $options;
 
     }
@@ -215,7 +215,7 @@ class MediaManager
     {
         // to be more meanigful when in inherited bundle
 
-        return 'kp\MediaBundle\Entity\Media';
+        return 'Coshi\MediaBundle\Entity\Media';
     }
 
     public function upload(Media $entity)

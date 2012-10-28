@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\Model;
+namespace Coshi\MediaBundle\Model;
 
 interface MediaInterface
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace kp\MediaBundle\Templating;
+namespace Coshi\MediaBundle\Templating;
 
 use Twig_Extension;
 use Twig_Filter_Method;
 use Twig_Function_Method;
-use kp\MediaBundle\Entity\Media;
+use Coshi\MediaBundle\Entity\Media;
 
 class ThumbnailExtension extends Twig_Extension
 {
@@ -19,7 +19,7 @@ class ThumbnailExtension extends Twig_Extension
 
     public function getName()
     {
-        return 'kp_media_ext';
+        return 'coshi_media_ext';
     }
 
     public function getFunctions()
@@ -33,7 +33,7 @@ class ThumbnailExtension extends Twig_Extension
     /**
      * getThumbnail
      *
-     * @param kp\MediaBundle\Entity\Media $media
+     * @param Coshi\MediaBundle\Entity\Media $media
      * @param string $type
      * @access public
      * @return string

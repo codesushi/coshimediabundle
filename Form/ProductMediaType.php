@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\Form;
+namespace Coshi\MediaBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
@@ -18,6 +18,6 @@ class ProductMediaType extends AbstractType
 
     public function getName()
     {
-        return 'kp_mediabundle_productmediatype';
+        return 'coshi_mediabundle_productmediatype';
     }
 }

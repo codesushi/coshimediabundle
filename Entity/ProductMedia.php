@@ -1,14 +1,14 @@
 <?php
-namespace kp\MediaBundle\Entity;
+namespace Coshi\MediaBundle\Entity;
 use Sylius\Sandbox\Bundle\AssortmentBundle\Entity\Product as Product;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
-use kp\MediaBundle\Model\MediaLinkInterface;
-use kp\MediaBundle\Model\MediaInterface;
+use Coshi\MediaBundle\Model\MediaLinkInterface;
+use Coshi\MediaBundle\Model\MediaInterface;
 
 /**
- * kp\MediaBundle\Entity\ProductMedia
+ * Coshi\MediaBundle\Entity\ProductMedia
  *
  * @ORM\Table(name="product_media")
  * @ORM\Entity()
@@ -32,7 +32,7 @@ class ProductMedia implements MediaLinkInterface
     protected $product;
 
      /**
-     * @ORM\OneToOne(targetEntity="\kp\MediaBundle\Entity\Media")
+     * @ORM\OneToOne(targetEntity="\Coshi\MediaBundle\Entity\Media")
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
      */
     protected $media;
@@ -124,10 +124,10 @@ class ProductMedia implements MediaLinkInterface
     /**
      * Set media
      *
-     * @param kp\MediaBundle\Entity\Media $media
+     * @param Coshi\MediaBundle\Entity\Media $media
      * @return ProductMedia
      */
-    public function setMedia(\kp\MediaBundle\Entity\Media $media = null)
+    public function setMedia(\Coshi\MediaBundle\Entity\Media $media = null)
     {
         $this->media = $media;
         return $this;
@@ -136,7 +136,7 @@ class ProductMedia implements MediaLinkInterface
     /**
      * Get media
      *
-     * @return kp\MediaBundle\Entity\Media
+     * @return Coshi\MediaBundle\Entity\Media
      */
     public function getMedia()
     {

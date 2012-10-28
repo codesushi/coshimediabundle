@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\Tests\Controller;
+namespace Coshi\MediaBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

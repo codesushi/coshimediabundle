@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\Entity;
+namespace Coshi\MediaBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 

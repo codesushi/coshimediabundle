@@ -1,15 +1,15 @@
-kpMediaBundle_index:
+CoshiMediaBundle_index:
     pattern:  /
-    defaults: { _controller: kpMediaBundle:Backend:index }
+    defaults: { _controller: CoshiMediaBundle:Backend:index }
 
-kpMediaBundle_upload:
+CoshiMediaBundle_upload:
     pattern:  /create
-    defaults: { _controller: kpMediaBundle:Backend:upload }
+    defaults: { _controller: CoshiMediaBundle:Backend:upload }
 
-kpMediaBundle_delete:
+CoshiMediaBundle_delete:
     pattern: /delete/{id}
-    defaults: { _controller: kpMediaBundle:Backend:delete }
+    defaults: { _controller: CoshiMediaBundle:Backend:delete }
 
-kp_media_internal_list:
+coshi_media_internal_list:
     pattern: /internal/list/{element}
-    defaults: {_controller: 'kp_media.controller_internal:listAction'}
+    defaults: {_controller: 'coshi_media.controller_internal:listAction'}

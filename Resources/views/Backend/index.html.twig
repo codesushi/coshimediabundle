@@ -1,13 +1,13 @@
 {% extends 'SandboxCoreBundle:Backend:layout.html.twig' %}
 {% block content %} 
-<h2> {{ "media.index" | trans({}, 'kpMediaBundle' )}}</h2>
+<h2> {{ "media.index" | trans({}, 'CoshiMediaBundle' )}}</h2>
 <ul class="thumbnails">
 {%for m in media %}
 <li class="span3">
 <div class="thumbnail">
     <img src="{{ thumbnail(m) }}" />
     <span>
-    <a href="{{ path('kpMediaBundle_delete',{'id':m.id})}}">{%trans%}Delete{%endtrans%}</a>
+    <a href="{{ path('CoshiMediaBundle_delete',{'id':m.id})}}">{%trans%}Delete{%endtrans%}</a>
     </span>
 </div></li>
 
@@ -15,9 +15,9 @@
 </ul>
 <div class="add-media">
 
-<h2>{{ "media.new" | trans({}, 'kpMediaBundle')}}</h2>
+<h2>{{ "media.new" | trans({}, 'CoshiMediaBundle')}}</h2>
 
-<form action="{{ path ('kpMediaBundle_upload')}}" method="post" {{ form_enctype(form) }}>
+<form action="{{ path ('CoshiMediaBundle_upload')}}" method="post" {{ form_enctype(form) }}>
     {{ form_widget(form) }}
 
     <input type="submit" value="Upload Document" />
