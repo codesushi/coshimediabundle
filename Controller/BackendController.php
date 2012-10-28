@@ -1,10 +1,10 @@
 <?php
 
-namespace kp\MediaBundle\Controller;
+namespace Coshi\MediaBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use kp\MediaBundle\Entity\Media;
-use kp\MediaBundle\Form\MediaType;
+use Coshi\MediaBundle\Entity\Media;
+use Coshi\MediaBundle\Form\MediaType;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -15,19 +15,19 @@ class BackendController extends Controller
 
     public function indexAction()
     {
-        $mediaManager = $this->get('kp_media.media_manager');
+        $mediaManager = $this->get('coshi_media.media_manager');
         $media = $mediaManager->getAll();
         $medium = $mediaManager->getClassInstance();
 
         $form = $this->createForm(new MediaType(),$medium);
 
-        return $this->render('kpMediaBundle:Backend:index.html.twig',
+        return $this->render('CoshiMediaBundle:Backend:index.html.twig',
             array('form'=>$form->createView(), 'media'=>$media));
     }
 
     public function deleteAction($id)
     {
-        $medium = $this->get('kp_media.media_manager')->get($id);
+        $medium = $this->get('coshi_media.media_manager')->get($id);
 
         $user = $this->container->get('security.context')->getToken()->getUser();
 
@@ -35,7 +35,7 @@ class BackendController extends Controller
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        $mediaManager = $this->get('kp_media.media_manager');
+        $mediaManager = $this->get('coshi_media.media_manager');
         $mediaManager->delete($medium);
 
         $this->get('session')
@@ -44,7 +44,7 @@ class BackendController extends Controller
 
 
 
-        return $this->redirect($this->generateUrl('kpMediaBundle_index'));
+        return $this->redirect($this->generateUrl('CoshiMediaBundle_index'));
 
 
     }
@@ -57,7 +57,7 @@ class BackendController extends Controller
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        $mediaManager = $this->get('kp_media.media_manager');
+        $mediaManager = $this->get('coshi_media.media_manager');
         $medium = $mediaManager->getClassInstance();
 
         $form = $this->createForm(new MediaType(),$medium);
@@ -80,13 +80,13 @@ class BackendController extends Controller
                 $em->persist($medium);
                 $em->flush();
                 */
-                return $this->redirect($this->generateUrl('kpMediaBundle_index'));
+                return $this->redirect($this->generateUrl('CoshiMediaBundle_index'));
             }
         }
 
         //return array('form' => $form->createView());
 
-        return $this->render('kpMediaBundle:Backend:upload.html.twig', array('form' => $form->createView()));
+        return $this->render('CoshiMediaBundle:Backend:upload.html.twig', array('form' => $form->createView()));
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace kp\MediaBundle\Controller;
+namespace Coshi\MediaBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,10 +31,10 @@ class InternalController extends ContainerAware
 
 
         $pager->setCurrentPage($request->query->get('page', 1), true, true);
-        $pager->setMaxPerPage($this->container->get('kp_core.config')->get('items_per_page',9));
+        $pager->setMaxPerPage($this->container->get('coshi_core.config')->get('items_per_page',9));
 
         return $this->container->get('templating')->renderResponse(
-            'kpMediaBundle:Internal:list.html.twig',
+            'CoshiMediaBundle:Internal:list.html.twig',
             array(
                 'media' => $pager->getCurrentPageResults(),
                 'pager' => $pager,
