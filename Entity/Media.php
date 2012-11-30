@@ -2,9 +2,6 @@
 
 namespace Coshi\MediaBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
 use Coshi\UserBundle\Entity\User;
 use Coshi\MediaBundle\Model\MediaInterface;
 use Coshi\MediaBundle\Model\MediaLinkInterface;
@@ -12,8 +9,6 @@ use Coshi\MediaBundle\Model\MediaLinkInterface;
 /**
  * Coshi\MediaBundle\Entity\Media
  *
- * @ORM\Table(name="coshi_media")
- * @ORM\Entity(repositoryClass="Coshi\MediaBundle\Entity\MediaRepository")
  */
 class Media implements MediaInterface
 {
@@ -22,97 +17,71 @@ class Media implements MediaInterface
     const EXTERNAL_MEDIA = 2;
     const YT_VIDEO = 3;
 
-
-    /**
-     * @var integer $id
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
     /**
      * @var string $filename
      *
-     * @ORM\Column(name="filename", type="string", length=255, nullable=true )
      */
     private $filename;
 
     /**
      * @var string $path
      *
-     * @ORM\Column(name="path", type="string", length=255, nullable=true )
      */
     private $path;
 
     /**
      * @var smallint $type
      *
-     * @ORM\Column(name="type", type="smallint")
      */
     private $type;
 
     /**
      * @var string $mediaurl
      *
-     * @ORM\Column(name="mediaurl", type="string", length=255,nullable=true)
      */
     private $mediaurl;
 
     /**
      * @var bigint $size
      *
-     * @ORM\Column(name="size", type="bigint",  nullable=true)
      */
     private $size;
 
     /**
      * @var string $mimetype
      *
-     * @ORM\Column(name="mimetype", type="string", length=64, nullable=true)
      */
     private $mimetype;
 
-    /**
-     * @var Coshi\UserBunlde\Entity\User $creator
-     *
-     * @ORM\ManyToOne(targetEntity="\Coshi\UserBundle\Entity\User", inversedBy="created_media")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
-     *
-     */
-    private $creator;
 
     /**
      * @var datetime $created_at
-     * @Gedmo\Timestampable(on="create")
-     *
-     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $created_at;
+    private $created;
 
     /**
      * @var datetime $updated_at
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updated_at;
+    private $updated;
 
     /**
-     * @Assert\File(maxSize="6000000")
+     * @var file
+     * holder for uploaded file
      */
     public $file;
 
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function onPrePersist()
     {
-        return $this->id;
+        $this->created = new \DateTime('now');
+        $this->updated = new \DateTime('now');
     }
+
+    public function onPreUpdate()
+    {
+        $this->updated = new \DateTime('now');
+    }
+
 
     /**
      * Set filename
@@ -278,25 +247,4 @@ class Media implements MediaInterface
         return $this->path;
     }
 
-    /**
-     * Set creator
-     *
-     * @param Coshi\UserBundle\Entity\User $creator
-     * @return Media
-     */
-    public function setCreator(\Coshi\UserBundle\Entity\User $creator = null)
-    {
-        $this->creator = $creator;
-        return $this;
-    }
-
-    /**
-     * Get creator
-     *
-     * @return Coshi\UserBundle\Entity\User
-     */
-    public function getCreator()
-    {
-        return $this->creator;
-    }
 }
