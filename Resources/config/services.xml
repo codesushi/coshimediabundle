@@ -20,13 +20,10 @@
     </service>
 
     <service
-        id="coshi_media.thumbnail_extension"
-        class="Coshi\MediaBundle\Templating\ThumbnailExtension"
-        >
-        <call method="setOptions">
-            <argument>%coshi_media%</argument>
-        </call>
-        <tag name="twig.extension" />
+        id="coshi_media.media.form.type"
+        class="Coshi\MediaBundle\Form\MediaType" >
+        <argument>%coshi_media.model.media_class%</argument>
+        <tag name="form.type" alias="coshi_media_form_type" />
     </service>
 
 
