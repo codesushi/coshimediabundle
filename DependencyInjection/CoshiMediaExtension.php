@@ -23,29 +23,32 @@ class CoshiMediaExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader(
+            $container,
+            new FileLocator(__DIR__.'/../Resources/config')
+        );
         $loader->load('services.xml');
         $loadedConfig = $container->getParameter('coshi_media');
 
-        $loadedConfig = $this->setImagerOptions($config, $loadedConfig);
-        $loadedConfig = $this->setLinkMap($config, $loadedConfig);
+        //$loadedConfig = $this->setImagerOptions($config, $loadedConfig);
+        $loadedConfig = $this->setMediaClassOptions($config, $loadedConfig);
         $config = $this->setUploaderOptions($config, $loadedConfig);
 
-        $container->setParameter('coshi_media',$config);
+        $container->setParameter('coshi_media', $config);
     }
 
     public function setLinkMap(array $config, array $loadedConfig)
     {
 
-        if(!array_key_exists('linkmap', $loadedConfig)) {
+        if (!array_key_exists('linkmap', $loadedConfig)) {
             $loadedConfig['linkmap']=array();
         }
 
-        if(!array_key_exists('linkmap', $config)) {
+        if (!array_key_exists('linkmap', $config)) {
             return $loadedConfig;
         }
 
-        foreach ($config['linkmap'] as $class => $linkclass){
+        foreach ($config['linkmap'] as $class => $linkclass) {
             $loadedConfig['linkmap'][$class] = $linkclass;
         }
 
@@ -54,15 +57,23 @@ class CoshiMediaExtension extends Extension
 
     public function setUploaderOptions($config, $loadedConfig)
     {
-        if(array_key_exists('uploader',$config))
-        {
-            foreach ($config['uploader'] as $k => $v){
+        if (array_key_exists('uploader', $config)) {
+            foreach ($config['uploader'] as $k => $v) {
                 $loadedConfig['uploader'][$k]=$v;
             }
 
         }
         return $loadedConfig;
     }
+
+    public function setMediaClassOptions($config, $loadedConfig)
+    {
+        if (array_key_exists('media_class', $config)) {
+            $loadedConfig['media_class'] = $config['media_class'];
+        }
+        return $loadedConfig;
+    }
+
     public function setImagerOptions($config, $loadedConfig)
     {
         if(array_key_exists('imager',$config))

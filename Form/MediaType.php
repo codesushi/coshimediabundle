@@ -11,14 +11,6 @@ class MediaType extends AbstractType
     {
         $builder
             ->add('file','file');
-  //          ->add('filename')
-  //          ->add('type')
-  //          ->add('mediaurl')
-  //          ->add('size')
-  //          ->add('mimetype')
-  //          ->add('creator_id')
-  //          ->add('created_at')
-  //          ->add('updated_at')
         ;
     }
 

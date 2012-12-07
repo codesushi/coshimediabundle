@@ -20,16 +20,22 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('coshi_media');
         $rootNode->children()
+            /*
             ->arrayNode('linkmap')
                 ->useAttributeAsKey('name')
                     ->prototype('scalar')
                 ->end()
             ->end()
-
+             */
             ->arrayNode('uploader')->children()
-                    ->scalarNode('media_path')->defaultValue('media')->end()
+                ->scalarNode('media_path')
+                ->defaultValue('media')->end()
                 ->end()->end()
-            ->arrayNode('imager')->isRequired()
+            ->scalarNode('media_class')
+                ->isRequired()
+                ->cannotBeEmpty()
+                ->end()
+            /*->arrayNode('imager')->isRequired()
                 ->children()->arrayNode('options')->children()
                     ->scalarNode('lib')->defaultValue('gd')->end()
                     ->arrayNode('thumbnails')->useAttributeAsKey('name')
@@ -38,7 +44,7 @@ class Configuration implements ConfigurationInterface
                                     ->prototype('scalar')->end()
                            ->end()
                         ->end()
-                    ->end()
+                        ->end()*/
         ->end();
 
 
