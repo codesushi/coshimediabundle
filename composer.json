@@ -1,6 +1,5 @@
 {
     "name": "coshi/mediabundle",
-    "type": "symfony-bundle",
     "description": "Simple media bundle.",
     "keywords": ["uploads", "media"],
     "homepage": "http://sylius.org",
