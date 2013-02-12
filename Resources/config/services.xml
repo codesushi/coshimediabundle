@@ -8,7 +8,6 @@
         class="Coshi\MediaBundle\Manager\MediaManager"
         >
         <argument type="service" id="doctrine.orm.default_entity_manager" />
-        <argument type="service" id="coshi_media.imager" />
         <argument>%coshi_media%</argument>
         <call method="setKernel">
             <argument type="service" id="kernel" />

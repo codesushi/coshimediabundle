@@ -90,12 +90,10 @@ class MediaManager
      */
     public function __construct(
         EntityManager $em,
-        Imager $imager,
         $options = null
     )
     {
         $this->entityManager = $em;
-        $this->imagerService = $imager;
         $this->options = $options;
 
         $this->class = $options['media_class'];
