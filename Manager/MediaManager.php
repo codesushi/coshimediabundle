@@ -38,8 +38,6 @@ class MediaManager
      */
     protected $kernel;
 
-
-
     /**
      * container
      *
@@ -47,6 +45,7 @@ class MediaManager
      * @access protected
      */
     protected $container;
+
     /**
      * em
      *
@@ -92,7 +91,7 @@ class MediaManager
     public function __construct(
         EntityManager $em,
         Imager $imager,
-        $options=null
+        $options = null
     )
     {
         $this->entityManager = $em;
@@ -144,6 +143,7 @@ class MediaManager
         }
 
     }
+
     public function update(Media $entity, $withFlush = true)
     {
 
@@ -184,7 +184,7 @@ class MediaManager
         $file = $entity->file->getClientOriginalName();
 
         $entity->setMimetype($entity->file->getMimeType());
-        $entity->setSize($entity->file->getClientSize()) ;
+        $entity->setSize($entity->file->getClientSize());
         $ext = $entity->file->guessExtension() ?
             $entity->file->guessExtension() : 'bin';
         $entity->setType(Media::UPLOADED_FILE);

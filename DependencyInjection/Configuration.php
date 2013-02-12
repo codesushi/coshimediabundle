@@ -30,6 +30,8 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('uploader')->children()
                 ->scalarNode('media_path')
                 ->defaultValue('media')->end()
+                ->scalarNode('www_root')
+                ->defaultValue('web')->end()
                 ->end()->end()
             ->scalarNode('media_class')
                 ->isRequired()
