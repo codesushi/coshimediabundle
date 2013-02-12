@@ -1,23 +1,28 @@
 {
     "name": "coshi/mediabundle",
+    "type": "symfony-bundle",
+    "description": "Simple media bundle.",
+    "keywords": ["uploads", "media"],
+    "homepage": "http://sylius.org",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Krzysztof Ożóg"
+            "email": "krzysztof.ozog@codesushi.co",
+            "homepage": "http://codesushi.co"
+        }
+    ],
     "minimum-stability": "dev",
     "require": {
-         "php": ">=5.3.2",
-        "symfony/framework-bundle": ">=2.0,<=2.3-dev"
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": ">=2.0,<=2.3-dev",
+        "symfony/form": "~2.1"
     },
     "require-dev": {
         "twig/twig": "@stable",
         "doctrine/orm": "@stable",
         "doctrine/common": "@stable",
         "doctrine/dbal": "@stable",
-        "doctrine/mongodb": "dev-master",
-        "doctrine/mongodb-odm": "dev-master",
-        "knplabs/knp-gaufrette-bundle": "0.2.*"
-    },
-    "suggest": {
-        "symfony/doctrine-bundle": "*",
-        "symfony/mongodb-odm-bundle": "*",
-        "knplabs/knp-gaufrette-bundle": "*"
     },
     "autoload": {
         "psr-0": { "Coshi\\MediaBundle": "" }
