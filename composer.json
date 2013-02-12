@@ -1,8 +1,7 @@
 {
     "name": "coshi/mediabundle",
-    "description": "Simple media bundle.",
+    "description": "Simple Media bundle",
     "keywords": ["uploads", "media"],
-    "homepage": "http://sylius.org",
     "license": "MIT",
     "authors": [
         {
