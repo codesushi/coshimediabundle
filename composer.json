@@ -22,7 +22,7 @@
         "twig/twig": "@stable",
         "doctrine/orm": "@stable",
         "doctrine/common": "@stable",
-        "doctrine/dbal": "@stable",
+        "doctrine/dbal": "@stable"
     },
     "autoload": {
         "psr-0": { "Coshi\\MediaBundle": "" }
