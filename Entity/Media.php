@@ -17,52 +17,60 @@ class Media implements MediaInterface
     const EXTERNAL_MEDIA = 2;
     const YT_VIDEO = 3;
 
+
+    protected  $id;
+
     /**
      * @var string $filename
      *
      */
-    private $filename;
+    protected $filename;
+
+    /**
+     * @var string $original
+     */
+    protected $original;
 
     /**
      * @var string $path
      *
      */
-    private $path;
+    protected $path;
 
     /**
      * @var smallint $type
      *
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string $mediaurl
      *
      */
-    private $mediaurl;
+    protected $mediaurl;
 
     /**
      * @var bigint $size
      *
      */
-    private $size;
+    protected $size;
 
     /**
      * @var string $mimetype
      *
      */
-    private $mimetype;
+    protected $mimetype;
 
 
     /**
      * @var datetime $created_at
      */
-    private $created;
+    protected $created;
 
     /**
      * @var datetime $updated_at
      */
-    private $updated;
+    protected $updated;
 
     /**
      * @var file
@@ -222,6 +230,24 @@ class Media implements MediaInterface
     public function getUpdatedAt()
     {
         return $this->updated_at;
+    }
+
+
+    /*
+     * Getter for
+     */
+    public function getOriginal()
+    {
+        return $this->original;
+    }
+
+    /*
+     * Setter for
+     */
+    public function setOriginal($original)
+    {
+        $this->original = $original;
+        return $this;
     }
 
 

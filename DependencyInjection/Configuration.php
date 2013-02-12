@@ -20,39 +20,22 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('coshi_media');
         $rootNode->children()
-            /*
-            ->arrayNode('linkmap')
-                ->useAttributeAsKey('name')
-                    ->prototype('scalar')
-                ->end()
-            ->end()
-             */
-            ->arrayNode('uploader')->children()
+            ->arrayNode('uploader')
+                ->addDefaultsIfNotSet()
+
+                ->children()
                 ->scalarNode('media_path')
-                ->defaultValue('media')->end()
+                    ->defaultValue('media')
+                    ->cannotBeEmpty()
+                ->end()
                 ->scalarNode('www_root')
-                ->defaultValue('web')->end()
+                   ->defaultValue('web')->end()
                 ->end()->end()
             ->scalarNode('media_class')
                 ->isRequired()
                 ->cannotBeEmpty()
                 ->end()
-            /*->arrayNode('imager')->isRequired()
-                ->children()->arrayNode('options')->children()
-                    ->scalarNode('lib')->defaultValue('gd')->end()
-                    ->arrayNode('thumbnails')->useAttributeAsKey('name')
-                                    ->prototype('array')
-                                    ->useAttributeAsKey('name')
-                                    ->prototype('scalar')->end()
-                           ->end()
-                        ->end()
-                        ->end()*/
         ->end();
-
-
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
 
         return $treeBuilder;
     }
