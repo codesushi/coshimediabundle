@@ -5,9 +5,9 @@ namespace Coshi\MediaBundle;
 use Coshi\MediaBundle\Event\MediaEvent;
 
 /**
- * class MediaEvents.php
+ * class MediaEvents
  *
- * class description here
+ * Defines kinds of events associated with media
  *
  * @author  Krzysztof Ozog, <krzysztof.ozog@codesushi.co>
  */

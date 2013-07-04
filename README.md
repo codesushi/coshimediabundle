@@ -1,7 +1,7 @@
 CoshiMediaBundle
 =============
 
-MediaBundle - for symfony 2
+MediaBundle - for Symfony 2
 
 Provides
 ---------
@@ -24,7 +24,7 @@ Setup
     $media = $mediaManager->upload($entity->file);
     $mediaManager->attach($entity, $media);
 
-Config reference
+Configuration reference
 ----------------
 
     coshi_media:
@@ -33,3 +33,11 @@ Config reference
             www_root: web #name of directory on which httpd's document root points
             media_path: media # name of directory where to upload files - www_root relative
 
+Twig Extension
+--------------
+
+This bunlde provides simple extension to render a path to media in Twig
+    
+    {{ coshi_media_url(media) }}
+
+Where of course media is a instance of mapped media class 

@@ -225,6 +225,13 @@ class MediaManager
             $entity->getFilename()
         );
 
+        $entity->setWebPath(
+            '/'.
+            $this->getUploadDir().
+            '/'.
+            $this->getFilename()
+        );
+
         return $entity;
 
 

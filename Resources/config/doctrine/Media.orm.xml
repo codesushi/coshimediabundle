@@ -5,22 +5,15 @@
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <mapped-superclass name="Coshi\MediaBundle\Entity\Media">
-
         <field name="filename" column="filename" type="string" length="255" />
-
         <field name="original" column="original" type="string" length="255" />
         <field name="path" column="path" type="string" length="255" unique="false" />
-
+        <field name="webPath" column="web_path" type="string" length="255" nullable="true" unique="false" />
         <field name="mimetype" column="mimetype" type="string" length="25" nullable="true" />
         <field name="type" column="type" type="smallint"  />
-
         <field name="mediaurl" column="media_url" type="string" length="255" unique="false" nullable="true"/>
-
         <field name="size" column="size" type="bigint" />
-
-
         <field name="created" column="created_at" type="datetime" />
-
         <field name="updated" column="updated_at" type="datetime" />
         <lifecycle-callbacks>
             <lifecycle-callback type="preUpdate" method="onPreUpdate" />
