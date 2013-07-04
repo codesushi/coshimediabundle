@@ -43,3 +43,10 @@ This bunlde provides simple extension to render a path to media in Twig
        {{ coshi_media_url(media) }}
 
 Where of course media is a instance of mapped media class 
+
+Events
+------
+
+Bundle generates couple events they are defined in Coshi\MediaBundle\MediaEvents
+Events occurs on create of medium, update and delete. 
+This is the way to extend bundle functionality.
