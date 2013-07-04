@@ -27,11 +27,12 @@ Setup
 Configuration reference
 ----------------
 
-    coshi_media:
-        media_class: Acme\MediaBundle\Entity\Media # Your entity class
-        uploader:
-            www_root: web #name of directory on which httpd's document root points
-            media_path: media # name of directory where to upload files - www_root relative
+    :::yml
+        coshi_media:
+            media_class: Acme\MediaBundle\Entity\Media # Your entity class
+            uploader:
+                www_root: web #name of directory on which httpd's document root points
+                media_path: media # name of directory where to upload files - www_root relative
 
 Twig Extension
 --------------
