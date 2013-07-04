@@ -37,7 +37,7 @@ Twig Extension
 --------------
 
 This bunlde provides simple extension to render a path to media in Twig
-    
-    {{ coshi_media_url(media) }}
+    :::jinja
+        {{ coshi_media_url(media) }}
 
 Where of course media is a instance of mapped media class 
