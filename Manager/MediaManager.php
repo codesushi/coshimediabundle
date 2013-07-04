@@ -229,7 +229,7 @@ class MediaManager
             '/'.
             $this->getUploadDir().
             '/'.
-            $this->getFilename()
+            $entity->getFilename()
         );
 
         return $entity;
