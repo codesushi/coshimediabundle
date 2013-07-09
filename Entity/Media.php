@@ -296,4 +296,19 @@ class Media implements MediaInterface
         $this->webPath = $webPath;
         return $this;
     }
+
+    public function isImage()
+    {
+        return $this->checkMime('image');
+    }
+
+    public function isPdf()
+    {
+        return $this->checkMime('pdf');
+    }
+
+    protected function checkMime($mime)
+    {
+        return stripos($this->getMimetype(), strtolower($mime)) !== false;
+    }
 }
