@@ -24,7 +24,7 @@ class MediaEvent extends Event
 
     public function getMedia()
     {
-        return $media;
+        return $this->media;
     }
 
 }
