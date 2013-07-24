@@ -9,7 +9,6 @@
                 <!-- max upload is 15 MB -->
                 <option name="maxSize">15360k</option>
             </constraint>
-            <constraint name="NotBlank" />
         </property>
     </class>
 </constraint-mapping>
