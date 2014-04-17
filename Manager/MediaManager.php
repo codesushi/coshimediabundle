@@ -241,7 +241,7 @@ class MediaManager
     {
         // unlink file
         if (!unlink($entity->getPath().'/'.$entity->getFilename())) {
-            throw new RuntimeException('Cannot delete file');
+            throw new \RuntimeException('Cannot delete file');
         }
 
         MediaEvents::dispatchDelete(
