@@ -15,18 +15,26 @@ use Coshi\MediaBundle\Model\MediaInterface;
  */
 class MediaEvent extends Event
 {
+    /**
+     * @var MediaInterface
+     */
     protected $media;
 
+    /**
+     * @param MediaInterface $media
+     */
     public function __construct(MediaInterface $media)
     {
         $this->media = $media;
     }
 
+    /**
+     * @return MediaInterface
+     */
     public function getMedia()
     {
         return $this->media;
     }
-
 }
 
 

@@ -2,29 +2,23 @@
 
 namespace Coshi\MediaBundle\Entity;
 
-use Coshi\UserBundle\Entity\User;
 use Coshi\MediaBundle\Model\MediaInterface;
-use Coshi\MediaBundle\Model\MediaLinkInterface;
 
-/**
- * Coshi\MediaBundle\Entity\Media
- *
- */
 class Media implements MediaInterface
 {
-
     const UPLOADED_FILE = 1;
     const EXTERNAL_MEDIA = 2;
     const YT_VIDEO = 3;
 
-
+    /**
+     * @var int
+     */
     protected  $id;
 
     /**
-     * @var string $filename
-     *
+     * @var string $fileName
      */
-    protected $filename;
+    protected $fileName;
 
     /**
      * @var string $original
@@ -33,105 +27,101 @@ class Media implements MediaInterface
 
     /**
      * @var string $path
-     *
      */
     protected $path;
 
     /**
-     * @var smallint $type
-     *
+     * @var int $type
      */
     protected $type;
 
     /**
-     * @var string $mediaurl
-     *
+     * @var string $mediaUrl
      */
-    protected $mediaurl;
+    protected $mediaUrl;
 
     /**
-     * @var bigint $size
-     *
+     * @var int $size
      */
     protected $size;
 
     /**
-     * @var string $mimetype
-     *
+     * @var string $mimeType
      */
-    protected $mimetype;
+    protected $mimeType;
 
     /**
-     * webPath
-     *
      * @var string
-     * @access protected
      */
     protected $webPath;
 
     /**
-     * @var datetime $created_at
+     * @var \DateTime $createdAt
      */
-    protected $created;
+    protected $createdAt;
 
     /**
-     * @var datetime $updated_at
+     * @var \DateTime $updatedAt
      */
-    protected $updated;
+    protected $updatedAt;
 
     /**
-     * @var file
+     * @var mixed
      * holder for uploaded file
      */
     public $file;
 
-
     public function onPrePersist()
     {
-        $this->created = new \DateTime('now');
-        $this->updated = new \DateTime('now');
+        $this->createdAt = new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
     }
 
     public function onPreUpdate()
     {
-        $this->updated = new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
     }
 
-
     /**
-     * Set filename
+     * Set fileName
      *
-     * @param string $filename
+     * @param string $fileName
+     *
+     * @return $this
      */
-    public function setFilename($filename)
+    public function setFileName($fileName)
     {
-        $this->filename = $filename;
+        $this->fileName = $fileName;
+        return $this;
     }
 
     /**
-     * Get filename
+     * Get fileName
      *
      * @return string
      */
-    public function getFilename()
+    public function getFileName()
     {
-        return $this->filename;
+        return $this->fileName;
     }
 
     /**
      * Set type
      *
-     * @param smallint $type
+     * @param int $type
+     *
+     * @return $this
      */
     public function setType($type)
     {
         $this->type = $type;
+        return $this;
     }
 
     /**
      * Get type
      *
-     * @return smallint
+     * @return int
      */
     public function getType()
     {
@@ -139,39 +129,45 @@ class Media implements MediaInterface
     }
 
     /**
-     * Set mediaurl
+     * Set mediaUrl
      *
-     * @param string $mediaurl
+     * @param string $mediaUrl
+     *
+     * @return $this
      */
-    public function setMediaurl($mediaurl)
+    public function setMediaUrl($mediaUrl)
     {
-        $this->mediaurl = $mediaurl;
+        $this->mediaUrl = $mediaUrl;
+        return $this;
     }
 
     /**
-     * Get mediaurl
+     * Get mediaUrl
      *
      * @return string
      */
-    public function getMediaurl()
+    public function getMediaUrl()
     {
-        return $this->mediaurl;
+        return $this->mediaUrl;
     }
 
     /**
      * Set size
      *
-     * @param bigint $size
+     * @param int $size
+     *
+     * @return $this
      */
     public function setSize($size)
     {
         $this->size = $size;
+        return $this;
     }
 
     /**
      * Get size
      *
-     * @return bigint
+     * @return int
      */
     public function getSize()
     {
@@ -179,77 +175,80 @@ class Media implements MediaInterface
     }
 
     /**
-     * Set mimetype
+     * Set mimeType
      *
-     * @param string $mimetype
+     * @param string $mimeType
+     * 
+     * @return $this
      */
-    public function setMimetype($mimetype)
+    public function setMimeType($mimeType)
     {
-        $this->mimetype = $mimetype;
+        $this->mimeType = $mimeType;
+        return $this;
     }
 
     /**
-     * Get mimetype
+     * Get mimeType
      *
      * @return string
      */
-    public function getMimetype()
+    public function getMimeType()
     {
-        return $this->mimetype;
+        return $this->mimeType;
     }
 
-
     /**
-     * Set created_at
+     * Set createdAt
      *
-     * @param datetime $createdAt
+     * @param \DateTime $createdAt
+     * 
+     * @return $this
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
+        return $this;
     }
 
     /**
-     * Get created_at
+     * Get createdAt
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
-     * Set updated_at
+     * Set updatedAt
      *
-     * @param datetime $updatedAt
+     * @param \DateTime $updatedAt
+     * 
+     * @return $this
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
+        return $this;
     }
 
     /**
-     * Get updated_at
+     * Get updatedAt
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-
-    /*
-     * Getter for
-     */
-    public function getOriginal()
-    {
-        return $this->original;
-    }
-
-    /*
-     * Setter for
+    /**
+     * Set original
+     *
+     * @param string $original
+     * 
+     * @return $this
      */
     public function setOriginal($original)
     {
@@ -257,12 +256,22 @@ class Media implements MediaInterface
         return $this;
     }
 
+    /**
+     * Get original
+     *
+     * @return string
+     */
+    public function getOriginal()
+    {
+        return $this->original;
+    }
 
     /**
      * Set path
      *
      * @param string $path
-     * @return Media
+     * 
+     * @return $this
      */
     public function setPath($path)
     {
@@ -281,15 +290,11 @@ class Media implements MediaInterface
     }
 
     /**
-     * Getter for webPath
-     */
-    public function getWebPath()
-    {
-        return $this->webPath;
-    }
-
-    /**
-     * Setter for webPath
+     * Set webPath
+     * 
+     * @param string $webPath
+     * 
+     * @return $this
      */
     public function setWebPath($webPath)
     {
@@ -297,11 +302,27 @@ class Media implements MediaInterface
         return $this;
     }
 
+    /**
+     * Get webPath
+     * 
+     * @return string
+     */
+    public function getWebPath()
+    {
+        return $this->webPath;
+    }
+
+    /**
+     * @return bool
+     */
     public function isImage()
     {
         return $this->checkMime('image');
     }
 
+    /**
+     * @return bool
+     */
     public function isPdf()
     {
         return $this->checkMime('pdf');
@@ -309,6 +330,6 @@ class Media implements MediaInterface
 
     protected function checkMime($mime)
     {
-        return stripos($this->getMimetype(), strtolower($mime)) !== false;
+        return stripos($this->getMimeType(), strtolower($mime)) !== false;
     }
 }

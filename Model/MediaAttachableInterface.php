@@ -8,15 +8,11 @@ namespace Coshi\MediaBundle\Model;
  */
 interface MediaAttachableInterface
 {
-
     /**
-     * getMediaLink
-     *
      * returns instance of link class
      *
      * @access public
-     * @return Coshi\MediaBundle\Model\MediaLinkInteface
+     * @return MediaLinkInterface
      */
     public function getMediaLink();
-
 }

@@ -7,11 +7,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-/**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
- */
 class CoshiMediaExtension extends Extension
 {
     /**
@@ -35,15 +30,14 @@ class CoshiMediaExtension extends Extension
         $container->setParameter('coshi_media', $config);
     }
 
-
     public function setUploaderOptions($config, $loadedConfig)
     {
         if (array_key_exists('uploader', $config)) {
             foreach ($config['uploader'] as $k => $v) {
                 $loadedConfig['uploader'][$k] = $v;
             }
-
         }
+
         return $loadedConfig;
     }
 
@@ -54,6 +48,4 @@ class CoshiMediaExtension extends Extension
         }
         return $loadedConfig;
     }
-
-
 }

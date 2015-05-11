@@ -7,20 +7,15 @@
     <parameter key="coshi_media.uploader.media_path">web</parameter>
 </parameters>
 
-
 <services>
     <service
         id="coshi_media.media_manager"
         class="Coshi\MediaBundle\Manager\MediaManager"
         >
         <argument type="service" id="doctrine.orm.default_entity_manager" />
+        <argument type="service" id="kernel" />
+        <argument type="service" id="event_dispatcher" />
         <argument>%coshi_media%</argument>
-        <call method="setKernel">
-            <argument type="service" id="kernel" />
-        </call>
-        <call method="setContainer">
-            <argument type="service" id="service_container" />
-        </call>
     </service>
 
     <service

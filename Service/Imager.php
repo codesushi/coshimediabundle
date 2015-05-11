@@ -2,7 +2,6 @@
 
 namespace Coshi\MediaBundle\Service;
 
-
 use \Imagine\Image\Box;
 use \Imagine\Image\Point;
 use \Symfony\Component\HttpFoundation\File\File;
@@ -10,53 +9,51 @@ use \Symfony\Component\HttpFoundation\File\File;
 class Imager
 {
     /**
-     * @ var array
-     * Service options like, imaggine backend
+     * @var array
+     * Service options like imagine backend
      */
     protected $options;
 
-
+    /**
+     * @param array $options
+     */
     public function __construct($options = array())
     {
         $this->options = $options['imager']['options'];
-
     }
 
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
-
     }
 
-    public function thumbnail( $file )
+    /**
+     * @param $file
+     * @throws \RuntimeException
+     */
+    public function thumbnail($file)
     {
-
-        $imagefile = new File($file);
-
+        $imageFile = new File($file);
         $DS = DIRECTORY_SEPARATOR;
 
-        if(!$imagefile->isFile())
-        {
-            throw new RuntimeException(sprintf('File %s in directory %s DOES NOT EXISTS!',$imagefile->getFilename(),$imagefile->getPath()));
-
+        if (!$imageFile->isFile()) {
+            throw new \RuntimeException(sprintf('File %s in directory %s DOES NOT EXISTS!', $imageFile->getFilename(), $imageFile->getPath()));
         }
 
         $image = $this->getImage();
         $image = $image->open($file);
 
-        foreach ($this->options['thumbnails'] as $thumbnail)
-        {
-
-            $targetBox = new Box($thumbnail['width'],$thumbnail['height']);
-            $image->thumbnail($targetBox)->save($imagefile->getPath().$DS.$thumbnail['dir'].$DS.$imagefile->getFilename() );
-
+        foreach ($this->options['thumbnails'] as $thumbnail) {
+            $targetBox = new Box($thumbnail['width'], $thumbnail['height']);
+            $image->thumbnail($targetBox)->save($imageFile->getPath().$DS.$thumbnail['dir'].$DS.$imageFile->getFilename());
         }
-
-
     }
 
     /**
-     * @Returns \Imagine\Image\ImageInteface
+     * @returns \Imagine\Image\ImageInterface
      */
     protected function getImage()
     {
@@ -71,7 +68,5 @@ class Imager
             default:
                 return new \Imagine\Gd\Imagine();
         }
-
     }
-
 }
