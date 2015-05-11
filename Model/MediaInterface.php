@@ -28,7 +28,7 @@ interface MediaInterface
 
     public function getOriginal();
 
-    public function setPath($path);;
+    public function setPath($path);
 
     public function getPath();
 
