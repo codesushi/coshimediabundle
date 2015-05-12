@@ -22,9 +22,7 @@
         id="coshi_media.media_extension"
         class="Coshi\MediaBundle\Templating\MediaExtension"
         >
-        <call method="setOptions">
-            <argument>%coshi_media%</argument>
-        </call>
+        <argument>%coshi_media%</argument>
         <tag name="twig.extension" />
     </service>
 </services>
