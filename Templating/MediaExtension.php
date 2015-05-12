@@ -34,7 +34,7 @@ class MediaExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'coshi_media_url' => new \Twig_SimpleFunction($this, 'getMediaUrl')
+            'coshi_media_url' => new \Twig_SimpleFunction('getMediaUrl', $this)
         );
     }
 
