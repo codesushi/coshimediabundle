@@ -84,12 +84,12 @@ class MediaManager
 
     /**
      * @param UploadedFile $file
-     * @param mixed $entity
+     * @param MediaInterface $entity
      * @param bool $withFlush
      *
      * @return MediaInterface
      */
-    public function create(UploadedFile $file, $entity = null, $withFlush = true)
+    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
@@ -156,9 +156,10 @@ class MediaManager
     /**
      * @param UploadedFile $uploadedFile
      * @param MediaInterface $entity
+     * @param bool $move
      * @return MediaInterface
      */
-    public function upload(UploadedFile $uploadedFile, MediaInterface $entity)
+    public function upload(UploadedFile $uploadedFile, MediaInterface $entity, $move = true)
     {
         $entity->setMimetype($uploadedFile->getMimeType());
         $entity->setSize($uploadedFile->getClientSize());
@@ -183,10 +184,12 @@ class MediaManager
 
         $entity->setPath($this->getUploadRootDir());
 
-        $uploadedFile->move(
-            $this->getUploadRootDir(),
-            $entity->getFileName()
-        );
+        if ($move) {
+            $uploadedFile->move(
+                $this->getUploadRootDir(),
+                $entity->getFileName()
+            );
+        }
 
         $entity->setWebPath(
             '/'.
