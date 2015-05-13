@@ -164,31 +164,32 @@ class MediaManager
         $entity->setMimetype($uploadedFile->getMimeType());
         $entity->setSize($uploadedFile->getClientSize());
 
-        $ext = $uploadedFile->guessExtension() ?
-            $uploadedFile->guessExtension() : 'bin';
-
         $entity->setType(Media::UPLOADED_FILE);
 
         $entity->setOriginal(
             $uploadedFile->getClientOriginalName()
         );
 
-        $entity->setFileName(
-            md5(
-                rand(1, 9999999).
-                time().
-                $uploadedFile->getClientOriginalName()
-            )
-            .'.'.$ext
-        );
-
         $entity->setPath($this->getUploadRootDir());
 
         if ($move) {
+            $ext = $uploadedFile->guessExtension() ?
+                $uploadedFile->guessExtension() : 'bin';
+            
+            $entity->setFileName(
+                md5(
+                    rand(1, 9999999).
+                    time().
+                    $uploadedFile->getClientOriginalName()
+                )
+                .'.'.$ext
+            );
             $uploadedFile->move(
                 $this->getUploadRootDir(),
                 $entity->getFileName()
             );
+        } else {
+            $entity->setFileName($entity->getOriginal());
         }
 
         $entity->setWebPath(
