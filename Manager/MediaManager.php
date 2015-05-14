@@ -86,17 +86,18 @@ class MediaManager
      * @param UploadedFile $file
      * @param MediaInterface $entity
      * @param bool $withFlush
+     * @param bool $move
      *
      * @return MediaInterface
      */
-    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true)
+    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
         }
 
         if (null !== $file) {
-            $entity = $this->upload($file, $entity);
+            $entity = $this->upload($file, $entity, $move);
         }
         $this->entityManager->persist($entity);
 
@@ -175,7 +176,7 @@ class MediaManager
         if ($move) {
             $ext = $uploadedFile->guessExtension() ?
                 $uploadedFile->guessExtension() : 'bin';
-            
+
             $entity->setFileName(
                 md5(
                     rand(1, 9999999).
