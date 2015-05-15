@@ -92,7 +92,7 @@ class MediaManager
      *
      * @return MediaInterface
      */
-    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true, Event $eventCalled)
+    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true, Event $eventCalled = null)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
