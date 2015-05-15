@@ -11,6 +11,7 @@ use Coshi\MediaBundle\Model\MediaInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -87,10 +88,11 @@ class MediaManager
      * @param MediaInterface $entity
      * @param bool $withFlush
      * @param bool $move
+     * @param Event $eventCalled
      *
      * @return MediaInterface
      */
-    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true)
+    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true, Event $eventCalled)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
@@ -104,7 +106,7 @@ class MediaManager
         if ($withFlush) {
             $this->entityManager->flush();
         }
-        $this->eventDispatcher->dispatch(MediaEvents::CREATE_MEDIA, new MediaEvent($entity));
+        $this->eventDispatcher->dispatch(MediaEvents::CREATE_MEDIA, new MediaEvent($entity, $eventCalled));
 
         return $entity;
     }

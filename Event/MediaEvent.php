@@ -21,11 +21,18 @@ class MediaEvent extends Event
     protected $media;
 
     /**
-     * @param MediaInterface $media
+     * @var Event
      */
-    public function __construct(MediaInterface $media)
+    protected $previousEvent;
+
+    /**
+     * @param MediaInterface $media
+     * @param Event $previousEvent
+     */
+    public function __construct(MediaInterface $media, Event $previousEvent = null)
     {
         $this->media = $media;
+        $this->previousEvent = $previousEvent;
     }
 
     /**
@@ -34,6 +41,14 @@ class MediaEvent extends Event
     public function getMedia()
     {
         return $this->media;
+    }
+
+    /**
+     * @return Event
+     */
+    public function getPrevious()
+    {
+        return $this->$previousEvent;
     }
 }
 
