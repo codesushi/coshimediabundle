@@ -48,7 +48,7 @@ class MediaEvent extends Event
      */
     public function getPrevious()
     {
-        return $this->$previousEvent;
+        return $this->previousEvent;
     }
 }
 
