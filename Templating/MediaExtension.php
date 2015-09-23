@@ -34,7 +34,7 @@ class MediaExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'coshi_media_url' => new \Twig_SimpleFunction('getMediaUrl', $this)
+            new \Twig_SimpleFunction('coshi_media_url', [$this, 'getMediaUrl']),
         );
     }
 
@@ -43,8 +43,12 @@ class MediaExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getMediaUrl(MediaInterface $media)
+    public function getMediaUrl(MediaInterface $media = null)
     {
+        if (!$media) {
+            return false;
+        }
+
         $mediaDir = $this->options['uploader']['media_path'];
 
         return sprintf('/%s/%s', $mediaDir, $media->getFilename());
