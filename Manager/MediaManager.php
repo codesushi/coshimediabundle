@@ -3,100 +3,67 @@
 namespace Coshi\MediaBundle\Manager;
 
 use Coshi\MediaBundle\Entity\Media;
-use Coshi\MediaBundle\Entity\ProductMedia;
-use Coshi\MediaBundle\Service\Imager;
-use Coshi\MediaBundle\Model\MediaAttachableInteface;
-use Coshi\MediaBundle\Model\MediaLinkInteface;
+use Coshi\MediaBundle\Event\MediaEvent;
+use Coshi\MediaBundle\MediaEvents;
+use Coshi\MediaBundle\Model\MediaAttachableInterface;
+use Coshi\MediaBundle\Model\MediaInterface;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
-
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 class MediaManager
 {
-
     /**
-     * class
-     *
-     * @var mixed
-     * @access protected
+     * @var string
      */
     protected $class;
 
     /**
-     * kernel
-     *
-     * @var HttpKernelInterface
-     * @access protected
+     * @var KernelInterface
      */
     protected $kernel;
 
-
-
     /**
-     * container
-     *
-     * @var mixed
-     * @access protected
+     * @var EventDispatcherInterface
      */
-    protected $container;
-    /**
-     * em
-     *
-     * @var mixed
-     * @access protected
-     */
-    protected $em ;
+    protected $eventDispatcher;
 
     /**
-     * repository
-     *
+     * @var EntityManager
+     */
+    protected $entityManager;
+
+    /**
      * @var EntityRepository
-     * @access protected
      */
     protected $repository;
 
     /**
-     * Imager Service instance
-     *
-     * @var Imager
-     * @access protected
-     */
-    protected $imagerService;
-
-
-    /**
-     * options
-     *
      * @var array
-     * @access protected
      */
     protected $options;
 
-
     /**
-     * __construct
-     *
      * @param EntityManager $em
-     * @param Imager $imager
-     * @access public
-     * @return void
+     * @param KernelInterface $kernel
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param array $options
      */
     public function __construct(
         EntityManager $em,
-        Imager $imager,
-        $options=null
+        KernelInterface $kernel,
+        EventDispatcherInterface $eventDispatcher,
+        array $options
     )
     {
         $this->entityManager = $em;
-        $this->imagerService = $imager;
+        $this->kernel = $kernel;
+        $this->eventDispatcher = $eventDispatcher;
         $this->options = $options;
 
         $this->class = $options['media_class'];
@@ -105,14 +72,10 @@ class MediaManager
             ->entityManager
             ->getRepository($this->class)
         ;
-
     }
 
     /**
-     * getClassInstance
-     *
-     * @access public
-     * @return void
+     * @return object
      */
     public function getClassInstance()
     {
@@ -121,46 +84,63 @@ class MediaManager
     }
 
     /**
-     * create
-     *
-     * @param bool $entity
+     * @param UploadedFile $file
+     * @param MediaInterface $entity
      * @param bool $withFlush
-     * @access public
-     * @return void
+     * @param bool $move
+     * @param Event $eventCalled
+     *
+     * @return MediaInterface
      */
-    public function create($entity = null, $withFlush = true)
+    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true, Event $eventCalled = null)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
         }
 
-        if (null !== $entity->file) {
-            $this->upload($entity);
+        if (null !== $file) {
+            $entity = $this->upload($file, $entity, $move);
         }
-
         $this->entityManager->persist($entity);
+
         if ($withFlush) {
             $this->entityManager->flush();
         }
+        $this->eventDispatcher->dispatch(MediaEvents::CREATE_MEDIA, new MediaEvent($entity, $eventCalled));
 
+        return $entity;
     }
-    public function update(Media $entity, $withFlush = true)
+
+    /**
+     * @param UploadedFile $file
+     * @param MediaInterface $entity
+     * @param bool $withFlush
+     * @return MediaInterface
+     */
+    public function update(
+        UploadedFile $file,
+        MediaInterface $entity,
+        $withFlush = true
+    )
     {
-
-        if (null !== $entity->file) {
-            $this->upload($entity);
+        if (null !== $file) {
+            $entity = $this->upload($file, $entity);
         }
-
         $this->entityManager->persist($entity);
 
         if ($withFlush) {
             $this->entityManager->flush();
         }
+        $this->eventDispatcher->dispatch(MediaEvents::UPDATE_MEDIA, new MediaEvent($entity));
+
+        return $entity;
     }
 
-
-
-
+    /**
+     * @param MediaAttachableInterface $object
+     * @param MediaInterface $medium
+     * @return mixed
+     */
     public function attach(
         MediaAttachableInterface $object,
         MediaInterface $medium
@@ -174,120 +154,119 @@ class MediaManager
         $this->entityManager->flush();
 
         return $linkObj;
-
     }
 
-
-    public function upload(Media $entity)
+    /**
+     * @param UploadedFile $uploadedFile
+     * @param MediaInterface $entity
+     * @param bool $move
+     * @return MediaInterface
+     */
+    public function upload(UploadedFile $uploadedFile, MediaInterface $entity, $move = true)
     {
+        $entity->setMimetype($uploadedFile->getMimeType());
+        $entity->setSize($uploadedFile->getClientSize());
 
-        $file = $entity->file->getClientOriginalName();
-
-        $entity->setMimetype($entity->file->getMimeType());
-        $entity->setSize($entity->file->getClientSize()) ;
-        $ext = $entity->file->guessExtension() ?
-            $entity->file->guessExtension() : 'bin';
         $entity->setType(Media::UPLOADED_FILE);
+
         $entity->setOriginal(
-            $entity->file->getClientOriginalName()
+            $uploadedFile->getClientOriginalName()
         );
-        $entity->setFilename(
-            md5(
-                rand(1, 9999999).
-                time().
-                $entity->file->getClientOriginalName()
-            )
-            .'.'.$ext
-        );
+
         $entity->setPath($this->getUploadRootDir());
 
-        $entity->file->move(
-            $this->getUploadRootDir(),
-            $entity->getFilename()
-        );
+        if ($move) {
+            $ext = $uploadedFile->guessExtension() ?
+                $uploadedFile->guessExtension() : 'bin';
 
-
-
-        /*
-         * Thumbnail is not part of this bundle
-         */
-         /* if(strpos($entity->getMimetype(),'image')!== false) {
-            $this->thumbnail($entity);
-         }*/
-
-        return $entity;
-
-
-    }
-
-    public function delete(Media $entity,$withFlush=true)
-    {
-        // unlink file
-        if (!unlink($entity->getPath().'/'.$entity->getFilename())) {
-            throw new RuntimeException('Cannot delete file');
+            $entity->setFileName(
+                md5(
+                    rand(1, 9999999).
+                    time().
+                    $uploadedFile->getClientOriginalName()
+                )
+                .'.'.$ext
+            );
+            $uploadedFile->move(
+                $this->getUploadRootDir(),
+                $entity->getFileName()
+            );
+        } else {
+            $entity->setFileName($entity->getOriginal());
         }
 
-        // bye thumbnails
+        $entity->setWebPath(
+            '/'.
+            $this->getUploadDir().
+            '/'.
+            $entity->getFileName()
+        );
 
-        /*foreach ($this->options['imager']['options']['thumbnails'] as $k =>$v)
-        {
-            unlink($entity->getPath().'/'.$v['dir'].'/'.$entity->getFilename());
-        }*/
+        return $entity;
+    }
 
+    /**
+     * @param MediaInterface $entity
+     * @param bool $withFlush
+     * @throws \RuntimeException
+     */
+    public function delete(MediaInterface $entity, $withFlush=true)
+    {
+        if (!unlink($entity->getPath() . '/' . $entity->getFileName())) {
+            throw new \RuntimeException('Cannot delete file');
+        }
+
+        $this->eventDispatcher->dispatch(MediaEvents::DELETE_MEDIA, new MediaEvent($entity));
         $this->entityManager->remove($entity);
+
         if ($withFlush) {
             $this->entityManager->flush();
         }
     }
 
-    /*public function thumbnail(Media $entity)
-    {
-        $this->imagerService->thumbnail($entity->getPath().DIRECTORY_SEPARATOR.$entity->getFilename());
-    }*/
-
+    /**
+     * @return string
+     */
     public function getUploadDir()
     {
         return $this->options['uploader']['media_path'];
     }
 
+    /**
+     * @return string
+     */
     public function getUploadRootDir()
     {
-        $basepath = $this->kernel->getRootDir().
-            '/../'.
-            $this->options['uploader']['www_root'].
-            '/'.
-            $this->options['uploader']['media_path'];
-        return $basepath;
+        $basePath = sprintf('%s/../%s/%s',
+            $this->kernel->getRootDir(),
+            $this->options['uploader']['www_root'],
+            $this->options['uploader']['media_path']
+        );
+
+        return $basePath;
     }
+
     /**
-     * getClass
-     *
-     * @access public
-     * @return void
+     * @return string
      */
     public function getClass()
     {
         return $this->class;
     }
 
-    public function setKernel(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
-
-    public function setContainer(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
+    /**
+     * @return EntityRepository
+     */
     public function getRepository()
     {
         return $this->repository;
     }
-
 }

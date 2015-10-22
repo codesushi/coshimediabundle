@@ -1,31 +1,29 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+           http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+<parameters>
+    <parameter key="coshi_media.uploader.media_path">web</parameter>
+</parameters>
+
 <services>
-    <service id="coshi_media.imager" class="Coshi\MediaBundle\Service\Imager">
-
-        <argument>%coshi_media%</argument>
-    </service>
-
     <service
         id="coshi_media.media_manager"
         class="Coshi\MediaBundle\Manager\MediaManager"
         >
         <argument type="service" id="doctrine.orm.default_entity_manager" />
-        <argument type="service" id="coshi_media.imager" />
+        <argument type="service" id="kernel" />
+        <argument type="service" id="event_dispatcher" />
         <argument>%coshi_media%</argument>
-        <call method="setKernel">
-            <argument type="service" id="kernel" />
-        </call>
-        <call method="setContainer">
-            <argument type="service" id="service_container" />
-        </call>
     </service>
 
     <service
-        id="coshi_media.media.form.type"
-        class="Coshi\MediaBundle\Form\MediaType" >
-        <argument>%coshi_media.model.media_class%</argument>
-        <tag name="form.type" alias="coshi_media_form_type" />
+        id="coshi_media.media_extension"
+        class="Coshi\MediaBundle\Templating\MediaExtension"
+        >
+        <argument>%coshi_media%</argument>
+        <tag name="twig.extension" />
     </service>
-
-
-
 </services>
+</container>
