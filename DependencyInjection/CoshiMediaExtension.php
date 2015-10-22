@@ -45,6 +45,10 @@ class CoshiMediaExtension extends Extension
     {
         if (array_key_exists('media_class', $config)) {
             $loadedConfig['media_class'] = $config['media_class'];
+            $container->setAlias(
+                'coshi_media.model.media_class',
+                $config['media_class']
+            );
         }
         return $loadedConfig;
     }
