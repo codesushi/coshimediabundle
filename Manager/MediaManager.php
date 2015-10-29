@@ -5,7 +5,6 @@ namespace Coshi\MediaBundle\Manager;
 use Coshi\MediaBundle\Entity\Media;
 use Coshi\MediaBundle\Event\MediaEvent;
 use Coshi\MediaBundle\MediaEvents;
-use Coshi\MediaBundle\Model\MediaAttachableInterface;
 use Coshi\MediaBundle\Model\MediaInterface;
 
 use Doctrine\ORM\EntityManager;
@@ -98,9 +97,8 @@ class MediaManager
             $entity = $this->getClassInstance();
         }
 
-        if (null !== $file) {
-            $entity = $this->upload($file, $entity, $move);
-        }
+        $entity = $this->upload($file, $entity, $move);
+        
         $this->entityManager->persist($entity);
 
         if ($withFlush) {
@@ -117,11 +115,7 @@ class MediaManager
      * @param bool $withFlush
      * @return MediaInterface
      */
-    public function update(
-        UploadedFile $file,
-        MediaInterface $entity,
-        $withFlush = true
-    )
+    public function update(UploadedFile $file, MediaInterface $entity, $withFlush = true)
     {
         if (null !== $file) {
             $entity = $this->upload($file, $entity);
@@ -134,26 +128,6 @@ class MediaManager
         $this->eventDispatcher->dispatch(MediaEvents::UPDATE_MEDIA, new MediaEvent($entity));
 
         return $entity;
-    }
-
-    /**
-     * @param MediaAttachableInterface $object
-     * @param MediaInterface $medium
-     * @return mixed
-     */
-    public function attach(
-        MediaAttachableInterface $object,
-        MediaInterface $medium
-    )
-    {
-        $linkObj = $object->getMediaLink();
-        $linkObj->setObject($object);
-        $linkObj->setMedium($medium);
-
-        $this->entityManager->persist($linkObj);
-        $this->entityManager->flush();
-
-        return $linkObj;
     }
 
     /**
