@@ -91,7 +91,7 @@ class MediaManager
      *
      * @return MediaInterface
      */
-    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true, Event $eventCalled = null)
+    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = true, $move = true)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
@@ -104,7 +104,8 @@ class MediaManager
         if ($withFlush) {
             $this->entityManager->flush();
         }
-        $this->eventDispatcher->dispatch(MediaEvents::CREATE_MEDIA, new MediaEvent($entity, $eventCalled));
+
+        $this->eventDispatcher->dispatch(MediaEvents::CREATE_MEDIA, new MediaEvent($entity));
 
         return $entity;
     }
@@ -120,11 +121,11 @@ class MediaManager
         if (null !== $file) {
             $entity = $this->upload($file, $entity);
         }
-        $this->entityManager->persist($entity);
 
         if ($withFlush) {
             $this->entityManager->flush();
         }
+        
         $this->eventDispatcher->dispatch(MediaEvents::UPDATE_MEDIA, new MediaEvent($entity));
 
         return $entity;
@@ -191,6 +192,7 @@ class MediaManager
         }
 
         $this->eventDispatcher->dispatch(MediaEvents::DELETE_MEDIA, new MediaEvent($entity));
+        
         $this->entityManager->remove($entity);
 
         if ($withFlush) {
