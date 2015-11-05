@@ -15,6 +15,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\KernelInterface;
 
+use Coshi\MediaBundle\FilesystemMap;
+
 class MediaManager
 {
     /**
@@ -42,6 +44,8 @@ class MediaManager
      */
     protected $repository;
 
+    protected $filesystemMap;
+
     /**
      * @var array
      */
@@ -57,13 +61,15 @@ class MediaManager
         EntityManager $em,
         KernelInterface $kernel,
         EventDispatcherInterface $eventDispatcher,
-        array $options
+        FilesystemMap $filesystemMap,
+        $options
     )
     {
         $this->entityManager = $em;
         $this->kernel = $kernel;
         $this->eventDispatcher = $eventDispatcher;
         $this->options = $options;
+        $this->filesystemMap = $filesystemMap;
 
         $this->class = $options['media_class'];
 
@@ -91,13 +97,13 @@ class MediaManager
      *
      * @return MediaInterface
      */
-    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = false, $keepOriginalFileName = false)
+    public function create(UploadedFile $file, MediaInterface $entity = null, Filesystem $filesystem = null, $withFlush = false, $keepOriginalFileName = false)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
         }
 
-        $entity = $this->upload($file, $entity, $keepOriginalFileName);
+        $entity = $this->upload($file, $entity, $filesystem, $keepOriginalFileName);
         
         $this->entityManager->persist($entity);
 
@@ -137,28 +143,32 @@ class MediaManager
      * @param bool $move
      * @return MediaInterface
      */
-    public function upload(UploadedFile $uploadedFile, MediaInterface $entity, $keepOriginalFileName = false)
+    public function upload(UploadedFile $uploadedFile, MediaInterface $entity, Filesystem $filesystem = null, $keepOriginalFileName = false)
     {
         $entity->setMimetype($uploadedFile->getMimeType());
         $entity->setSize($uploadedFile->getClientSize());
         $entity->setType(Media::UPLOADED_FILE);
         $entity->setOriginal($uploadedFile->getClientOriginalName());
-        $entity->setPath($this->getUploadRootDir());
-        
-        if ($keepOriginalFileName) {
-            $fileName = $entity->getOriginal();
-            $entity->setFileName($entity->getOriginal());
-        } else {
-            $ext = $uploadedFile->guessExtension() ? $uploadedFile->guessExtension() : 'bin';
-            $fileName = md5(rand(1, 9999999).time().$uploadedFile->getClientOriginalName()).'.'.$ext;
+        $entity->setFileName($this->getFilename($uploadedFile, $keepOriginalFileName));
+
+        if (!$filesystem) {
+            $filesystem = $this->filesystemMap->getDefault();
         }
 
-        $entity->setFileName($fileName);
+        //Upload file to storage
+        if (!$filesystem->has($entity->getFileName())) {
+            $filesystem->write($entity->getFileName(), file_get_contents($uploadedFile->getPathname()));
+        }
 
-        $uploadedFile->move($this->getUploadRootDir(), $entity->getFileName());
-        
-        $webPath = sprintf('/%s/%s', $this->getUploadDir(), $entity->getFileName());
-        $entity->setWebPath($webPath);
+        $entity->setStorage($filesystem->getName());
+
+        $publicUrl = $filesystem->getAdapter()->getUrl($entity->getFileName());
+
+        var_dump($publicUrl);
+
+        //Set path on storage. 
+        //$entity->setPath($this->getUploadRootDir());
+        //$entity->setWebPath($webPath);
 
         return $entity;
     }
@@ -183,15 +193,31 @@ class MediaManager
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getUploadDir()
+    public function getFilename(UploadedFile $uploadedFile, $keepOriginalFileName)
     {
-        return $this->options['uploader']['media_path'];
+        if ($keepOriginalFileName) {
+            $fileName = $uploadedFile->getClientOriginalName();
+        } else {
+            $ext = $uploadedFile->guessExtension() ? $uploadedFile->guessExtension() : 'bin';
+            $fileName = md5(rand(1, 9999999).time().$uploadedFile->getClientOriginalName()).'.'.$ext;
+        }
+
+        return $fileName;
     }
 
     /**
+     *
+     * //Move to filesystem
+     * @return string
+     */
+    public function getUploadDir()
+    {   
+        return $this->options['uploader']['media_path'];
+    }
+
+
+    /**
+     * //Should be move to filesystem
      * @return string
      */
     public function getUploadRootDir()

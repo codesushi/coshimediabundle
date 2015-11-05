@@ -27,11 +27,34 @@ Setup
 Configuration reference
 ----------------
 
-        coshi_media:
-            media_class: Acme\MediaBundle\Entity\Media #Your entity class
-            uploader:
-                www_root: web #name of directory on which httpd's document root points
-                media_path: media # name of directory where to upload files - www_root relative
+    coshi_media:
+        media_class: Webfit\MO\MediaBundle\Entity\Media
+
+        #Adapters definiton
+        adapters:
+            local:
+                directory: media_upload_delete_work 
+                create: true
+            aws_s3:
+                service_id: aws_s3.client #name of amazon service
+                bucket_name: test-mediabundle
+                options:
+                    directory: media_bundle_adapter_upload
+        
+        #Filesystems/storage definition
+        filesystems:
+            local:
+                adapter: local
+            amazon:
+                adapter: aws_s3
+        
+        #Optional parameter
+        filesystem_default: amazon
+
+        #Not used parameters but still available 
+        uploader:
+            www_root: web
+            media_path: media
 
 Twig Extension
 --------------
@@ -52,3 +75,4 @@ This is the way to extend bundle functionality.
         MediaEvents::CREATE_MEDIA
         MediaEvents::UPDATE_MEDIA
         MediaEvents::DELETE_MEDIA
+

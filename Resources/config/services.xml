@@ -15,6 +15,7 @@
         <argument type="service" id="doctrine.orm.default_entity_manager" />
         <argument type="service" id="kernel" />
         <argument type="service" id="event_dispatcher" />
+        <argument type="service" id="coshi_media.filesystem_map" />
         <argument>%coshi_media%</argument>
     </service>
 
@@ -24,6 +25,32 @@
         >
         <argument>%coshi_media%</argument>
         <tag name="twig.extension" />
+    </service>
+
+    <!-- File systems services -->
+    <service  id="coshi_media.filesystem_map" class="Coshi\MediaBundle\FilesystemMap">
+            <argument /> <!-- files systems arra -->
+            <argument /> <!-- default file system key -->
+    </service>
+    <service id="coshi_media.filesystem" class="Coshi\MediaBundle\Filesystem" abstract="true">
+        <argument /> <!-- Adapter -->
+        <argument /> <!-- filesystem name -->
+    </service>
+
+    <!-- Adapters -->
+    <service id="coshi_media.adapter.local" class="Gaufrette\Adapter\Local" abstract="true" public="false">
+            <argument /><!-- Directory -->
+            <argument /><!-- Create direcotry -->
+    </service>
+    <service id="coshi_media.adapter.aws_s3" class="Gaufrette\Adapter\AwsS3" abstract="true" public="false" />
+
+
+    <!-- Adapters facotries -->
+    <service id="coshi_media.adapter.factory.local" class="Coshi\MediaBundle\DependencyInjection\Factory\LocalAdapterFactory">
+        <tag name="coshi_media.tag.gaufrette.adapter.factory"/>
+    </service>
+    <service id="coshi_media.adapter.factory.aws_s3" class="Coshi\MediaBundle\DependencyInjection\Factory\AwsS3AdapterFactory">
+         <tag name="coshi_media.tag.gaufrette.adapter.factory"/>
     </service>
 </services>
 </container>

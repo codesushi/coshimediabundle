@@ -13,6 +13,7 @@
         <field name="type" column="type" type="smallint"  />
         <field name="mediaUrl" column="media_url" type="string" length="255" unique="false" nullable="true"/>
         <field name="size" column="size" type="bigint" />
+        <field name="storage" column="storage" type="string" length="255" nullable="false" />
         <field name="createdAt" column="created_at" type="datetime" />
         <field name="updatedAt" column="updated_at" type="datetime" />
         <lifecycle-callbacks>
