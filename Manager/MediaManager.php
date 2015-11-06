@@ -56,15 +56,13 @@ class MediaManager
         EntityManager $em,
         EventDispatcherInterface $eventDispatcher,
         FilesystemMap $filesystemMap,
-        $options
+        $mediaClass
     )
     {
         $this->entityManager = $em;
         $this->eventDispatcher = $eventDispatcher;
-        $this->options = $options;
         $this->filesystemMap = $filesystemMap;
-
-        $this->class = $options['media_class'];
+        $this->class = $mediaClass;
 
         $this->repository = $this
             ->entityManager
@@ -153,10 +151,6 @@ class MediaManager
         $entity->setStorage($filesystem->getName());
         $entity->setPath($storagePath);
 
-        $entity->setWebPath(
-            $filesystem->getAdapter()->getUrl($entity->getPath())
-        );
-
         //Upload file to storage
         if (!$filesystem->has($entity->getFileName())) {
             $filesystem->write($entity->getPath(), file_get_contents($uploadedFile->getPathname()));
@@ -166,41 +160,18 @@ class MediaManager
     }
 
     /**
-     * Set uploaded file path. Path must be realtaive to upload direcotry/bucket.
-     * In path string can't be used '..'
-     * 
-     * @param [type] $path [description]
-     */
-    public function setUploadPath($path)
-    {   
-        //remove doubled slashes
-        $path = preg_replace('#/+#','/',$path);
-        $path = ltrim($path, '/');
-        $path = rtrim($path, '/');
-
-        $this->uploadPath = $path;
-
-        return $this;
-    }
-
-    public function getUploadPath()
-    {
-        return $this->uploadPath;
-    }
-
-    /**
      * @param MediaInterface $entity
      * @param bool $withFlush
      * @throws \RuntimeException
      */
     public function delete(MediaInterface $entity, $withFlush = false)
     {
-        if (!unlink($entity->getPath() . '/' . $entity->getFileName())) {
-            throw new \RuntimeException('Cannot delete file');
-        }
 
         $this->eventDispatcher->dispatch(MediaEvents::DELETE_MEDIA, new MediaEvent($entity));
         
+        $filesystem = $this->filesystemMap->get($entity->getStorage());
+        $filesystem->delete($entity->getPath());
+
         $this->entityManager->remove($entity);
 
         if ($withFlush) {
@@ -227,14 +198,6 @@ class MediaManager
     public function getClass()
     {
         return $this->class;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
     }
 
     /**

@@ -36,6 +36,8 @@ class CoshiMediaExtension extends Extension
         //Create defined filesystems
         $this->setFilesystemMap($config, $container, $adapters);
 
+        $this->setMediaManager($config, $container);
+
         $container->setParameter('coshi_media', $config);
     }
 
@@ -123,12 +125,10 @@ class CoshiMediaExtension extends Extension
         return $this->adaptersFactories = $factories;
     }
 
-
-    public function setMediaClassOptions($config, $loadedConfig)
+    protected function setMediaManager(array $config, ContainerBuilder $container)
     {
-        if (array_key_exists('media_class', $config)) {
-            $loadedConfig['media_class'] = $config['media_class'];
-        }
-        return $loadedConfig;
+        $container
+            ->getDefinition('coshi_media.media_manager')
+                ->replaceArgument(3, $config['media_class']);
     }
 }

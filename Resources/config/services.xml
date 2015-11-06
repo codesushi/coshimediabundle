@@ -15,14 +15,14 @@
         <argument type="service" id="doctrine.orm.default_entity_manager" />
         <argument type="service" id="event_dispatcher" />
         <argument type="service" id="coshi_media.filesystem_map" />
-        <argument>%coshi_media%</argument>
+        <argument /> <!-- coshi_media.media_class -->
     </service>
 
     <service
         id="coshi_media.media_extension"
         class="Coshi\MediaBundle\Templating\MediaExtension"
         >
-        <argument>%coshi_media%</argument>
+        <argument type="service" id="coshi_media.filesystem_map"/>
         <tag name="twig.extension" />
     </service>
 

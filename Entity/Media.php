@@ -51,11 +51,6 @@ class Media implements MediaInterface
     protected $mimeType;
 
     /**
-     * @var string
-     */
-    protected $webPath;
-
-    /**
      * @var \DateTime $createdAt
      */
     protected $createdAt;
@@ -310,28 +305,6 @@ class Media implements MediaInterface
         return $this->path;
     }
 
-    /**
-     * Set webPath
-     * 
-     * @param string $webPath
-     * 
-     * @return $this
-     */
-    public function setWebPath($webPath)
-    {
-        $this->webPath = $webPath;
-        return $this;
-    }
-
-    /**
-     * Get webPath
-     * 
-     * @return string
-     */
-    public function getWebPath()
-    {
-        return $this->webPath;
-    }
 
     /**
      * @return bool

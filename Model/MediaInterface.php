@@ -31,8 +31,4 @@ interface MediaInterface
     public function setPath($path);
 
     public function getPath();
-
-    public function setWebPath($webPath);
-
-    public function getWebPath();
 }

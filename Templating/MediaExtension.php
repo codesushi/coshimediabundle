@@ -3,6 +3,8 @@
 namespace Coshi\MediaBundle\Templating;
 
 use Coshi\MediaBundle\Model\MediaInterface;
+use Coshi\MediaBundle\FilesystemMap;
+use Coshi\MediaBundle\Adapter\UrlInterface;
 use Twig_Extension;
 
 class MediaExtension extends Twig_Extension
@@ -10,14 +12,14 @@ class MediaExtension extends Twig_Extension
     /**
      * @var array
      */
-    private $options;
+    private $filesystemMap;
 
     /**
      * @param array $options
      */
-    public function __construct(array $options)
+    public function __construct(FilesystemMap $filesystemMap)
     {
-        $this->options = $options;
+        $this->filesystemMap = $filesystemMap;
     }
 
     /**
@@ -40,18 +42,23 @@ class MediaExtension extends Twig_Extension
 
     /**
      * @param MediaInterface $media
-     *
+     * @param array $options 
      * @return string
      */
-    public function getMediaUrl(MediaInterface $media = null)
+    public function getMediaUrl(MediaInterface $media = null, array $options = [])
     {
         if (!$media) {
             return false;
         }
 
-        $mediaDir = $this->options['uploader']['media_path'];
+        $storageName = $media->getStorage();
+        $adapter = $this->filesystemMap->get($storageName)->getAdapter();
 
-        return sprintf('/%s/%s', $mediaDir, $media->getFilename());
+        if ($adapter instanceof UrlInterface) {
+            return $adapter->getUrl($media->getPath(), $options);
+        }
+
+        return false;
     }
 }
 

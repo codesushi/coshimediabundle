@@ -8,7 +8,6 @@
         <field name="fileName" column="file_name" type="string" length="255" />
         <field name="original" column="original" type="string" length="255" />
         <field name="path" column="path" type="string" length="255" unique="false" />
-        <field name="webPath" column="web_path" type="string" length="255" nullable="true" unique="false" />
         <field name="mimeType" column="mime_type" type="string" length="25" nullable="true" />
         <field name="type" column="type" type="smallint"  />
         <field name="mediaUrl" column="media_url" type="string" length="255" unique="false" nullable="true"/>
