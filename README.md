@@ -51,11 +51,6 @@ Configuration reference
         #Optional parameter
         filesystem_default: amazon
 
-        #Not used parameters but still available 
-        uploader:
-            www_root: web
-            media_path: media
-
 Twig Extension
 --------------
 
