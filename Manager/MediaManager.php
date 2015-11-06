@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 use Coshi\MediaBundle\FilesystemMap;
 
@@ -23,11 +22,6 @@ class MediaManager
      * @var string
      */
     protected $class;
-
-    /**
-     * @var KernelInterface
-     */
-    protected $kernel;
 
     /**
      * @var EventDispatcherInterface
@@ -46,6 +40,7 @@ class MediaManager
 
     protected $filesystemMap;
 
+    protected $uploadPath;
     /**
      * @var array
      */
@@ -59,14 +54,12 @@ class MediaManager
      */
     public function __construct(
         EntityManager $em,
-        KernelInterface $kernel,
         EventDispatcherInterface $eventDispatcher,
         FilesystemMap $filesystemMap,
         $options
     )
     {
         $this->entityManager = $em;
-        $this->kernel = $kernel;
         $this->eventDispatcher = $eventDispatcher;
         $this->options = $options;
         $this->filesystemMap = $filesystemMap;
@@ -155,22 +148,44 @@ class MediaManager
             $filesystem = $this->filesystemMap->getDefault();
         }
 
+        $storagePath = sprintf('%s/%s', $this->getUploadPath(), $entity->getFilename());
+        
+        $entity->setStorage($filesystem->getName());
+        $entity->setPath($storagePath);
+
+        $entity->setWebPath(
+            $filesystem->getAdapter()->getUrl($entity->getPath())
+        );
+
         //Upload file to storage
         if (!$filesystem->has($entity->getFileName())) {
-            $filesystem->write($entity->getFileName(), file_get_contents($uploadedFile->getPathname()));
+            $filesystem->write($entity->getPath(), file_get_contents($uploadedFile->getPathname()));
         }
 
-        $entity->setStorage($filesystem->getName());
-
-        $publicUrl = $filesystem->getAdapter()->getUrl($entity->getFileName());
-
-        var_dump($publicUrl);
-
-        //Set path on storage. 
-        //$entity->setPath($this->getUploadRootDir());
-        //$entity->setWebPath($webPath);
-
         return $entity;
+    }
+
+    /**
+     * Set uploaded file path. Path must be realtaive to upload direcotry/bucket.
+     * In path string can't be used '..'
+     * 
+     * @param [type] $path [description]
+     */
+    public function setUploadPath($path)
+    {   
+        //remove doubled slashes
+        $path = preg_replace('#/+#','/',$path);
+        $path = ltrim($path, '/');
+        $path = rtrim($path, '/');
+
+        $this->uploadPath = $path;
+
+        return $this;
+    }
+
+    public function getUploadPath()
+    {
+        return $this->uploadPath;
     }
 
     /**
@@ -205,31 +220,6 @@ class MediaManager
         return $fileName;
     }
 
-    /**
-     *
-     * //Move to filesystem
-     * @return string
-     */
-    public function getUploadDir()
-    {   
-        return $this->options['uploader']['media_path'];
-    }
-
-
-    /**
-     * //Should be move to filesystem
-     * @return string
-     */
-    public function getUploadRootDir()
-    {
-        $basePath = sprintf('%s/../%s/%s',
-            $this->kernel->getRootDir(),
-            $this->options['uploader']['www_root'],
-            $this->options['uploader']['media_path']
-        );
-
-        return $basePath;
-    }
 
     /**
      * @return string

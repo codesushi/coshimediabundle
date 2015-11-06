@@ -23,20 +23,6 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('coshi_media');
         
-        //TODO Section to delete
-        $rootNode->children()
-             ->arrayNode('uploader')
-                 ->addDefaultsIfNotSet()
-                 ->children()
-                 ->scalarNode('media_path')
-                     ->defaultValue('media')
-                     ->cannotBeEmpty()
-                 ->end()
-                 ->scalarNode('www_root')
-                    ->defaultValue('web')->end()
-                 ->end()->end()
-         ->end();
-
         $this->setMediaClassSection($rootNode);
         $this->setFilesystemSection($rootNode);
         $this->setAdaptersSection($rootNode, $this->factories);
@@ -90,6 +76,6 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
-            ;
+        ;
     }
 }

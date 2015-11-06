@@ -13,7 +13,6 @@
         class="Coshi\MediaBundle\Manager\MediaManager"
         >
         <argument type="service" id="doctrine.orm.default_entity_manager" />
-        <argument type="service" id="kernel" />
         <argument type="service" id="event_dispatcher" />
         <argument type="service" id="coshi_media.filesystem_map" />
         <argument>%coshi_media%</argument>
@@ -38,11 +37,11 @@
     </service>
 
     <!-- Adapters -->
-    <service id="coshi_media.adapter.local" class="Gaufrette\Adapter\Local" abstract="true" public="false">
+    <service id="coshi_media.adapter.local" class="Coshi\MediaBundle\Adapter\Local" abstract="true" public="false">
             <argument /><!-- Directory -->
             <argument /><!-- Create direcotry -->
     </service>
-    <service id="coshi_media.adapter.aws_s3" class="Gaufrette\Adapter\AwsS3" abstract="true" public="false" />
+    <service id="coshi_media.adapter.aws_s3" class="Coshi\MediaBundle\Adapter\AwsS3" abstract="true" public="false" />
 
 
     <!-- Adapters facotries -->

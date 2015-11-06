@@ -57,9 +57,9 @@ class CoshiMediaExtension extends Extension
         $filesystemDefault = array_key_exists('filesystem_default', $config) ? $config['filesystem_default'] : null;
 
         $container->getDefinition('coshi_media.filesystem_map')
-             ->replaceArgument(0, $map)
-             ->replaceArgument(1, $filesystemDefault)
-             ;
+            ->replaceArgument(0, $map)
+            ->replaceArgument(1, $filesystemDefault)
+        ;
     }
 
     protected function getAdapters(ContainerBuilder $container, array $config, $factories)
@@ -67,7 +67,7 @@ class CoshiMediaExtension extends Extension
         $adapters = [];
 
         foreach ($config['adapters'] as $name => $adapter) {
-            if ( array_key_exists($name, $factories)) {
+            if (array_key_exists($name, $factories)) {
                 $id = sprintf('coshi_media.gaufrette.adapter.%s', $name);
 
                 $factories[$name]->create($container, $id, $adapter);
@@ -123,18 +123,6 @@ class CoshiMediaExtension extends Extension
         return $this->adaptersFactories = $factories;
     }
 
-
-    //Propably to delete
-    public function setUploaderOptions($config, $loadedConfig)
-    {
-        if (array_key_exists('uploader', $config)) {
-            foreach ($config['uploader'] as $k => $v) {
-                $loadedConfig['uploader'][$k] = $v;
-            }
-        }
-
-        return $loadedConfig;
-    }
 
     public function setMediaClassOptions($config, $loadedConfig)
     {

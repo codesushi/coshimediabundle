@@ -66,6 +66,12 @@ class Media implements MediaInterface
     protected $updatedAt;
 
     /**
+     * Storage identifiter
+     * @var string $storage
+     */
+    protected $storage;
+
+    /**
      * @var mixed
      * holder for uploaded file
      */
@@ -80,6 +86,21 @@ class Media implements MediaInterface
     public function onPreUpdate()
     {
         $this->updatedAt = new \DateTime('now');
+    }
+
+    /**
+     * Set storage identifier
+     */
+    public function setStorage($name)
+    {
+        $this->storage = $name;
+
+        return $this;
+    }
+
+    public function getStorage()
+    {
+        return $this->storage;
     }
 
     /**
