@@ -18,7 +18,8 @@
     "symfony/event-dispatcher": "@stable",
     "symfony/http-foundation": "@stable",
     "symfony/http-kernel": "@stable",
-    "symfony/config": "@stable"
+    "symfony/config": "@stable",
+    "knplabs/gaufrette": "0.2.*@dev"
   },
   "require-dev": {
     "twig/twig": "@stable",

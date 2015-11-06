@@ -13,7 +13,8 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpKernel\KernelInterface;
+
+use Coshi\MediaBundle\FilesystemMap;
 
 class MediaManager
 {
@@ -21,11 +22,6 @@ class MediaManager
      * @var string
      */
     protected $class;
-
-    /**
-     * @var KernelInterface
-     */
-    protected $kernel;
 
     /**
      * @var EventDispatcherInterface
@@ -42,6 +38,9 @@ class MediaManager
      */
     protected $repository;
 
+    protected $filesystemMap;
+
+    protected $uploadPath;
     /**
      * @var array
      */
@@ -55,17 +54,15 @@ class MediaManager
      */
     public function __construct(
         EntityManager $em,
-        KernelInterface $kernel,
         EventDispatcherInterface $eventDispatcher,
-        array $options
+        FilesystemMap $filesystemMap,
+        $mediaClass
     )
     {
         $this->entityManager = $em;
-        $this->kernel = $kernel;
         $this->eventDispatcher = $eventDispatcher;
-        $this->options = $options;
-
-        $this->class = $options['media_class'];
+        $this->filesystemMap = $filesystemMap;
+        $this->class = $mediaClass;
 
         $this->repository = $this
             ->entityManager
@@ -91,13 +88,13 @@ class MediaManager
      *
      * @return MediaInterface
      */
-    public function create(UploadedFile $file, MediaInterface $entity = null, $withFlush = false, $keepOriginalFileName = false)
+    public function create(UploadedFile $file, MediaInterface $entity = null, Filesystem $filesystem = null, $withFlush = false, $keepOriginalFileName = false)
     {
         if (!$entity instanceof MediaInterface) {
             $entity = $this->getClassInstance();
         }
 
-        $entity = $this->upload($file, $entity, $keepOriginalFileName);
+        $entity = $this->upload($file, $entity, $filesystem, $keepOriginalFileName);
         
         $this->entityManager->persist($entity);
 
@@ -137,28 +134,27 @@ class MediaManager
      * @param bool $move
      * @return MediaInterface
      */
-    public function upload(UploadedFile $uploadedFile, MediaInterface $entity, $keepOriginalFileName = false)
+    public function upload(UploadedFile $uploadedFile, MediaInterface $entity, Filesystem $filesystem = null, $keepOriginalFileName = false)
     {
         $entity->setMimetype($uploadedFile->getMimeType());
         $entity->setSize($uploadedFile->getClientSize());
         $entity->setType(Media::UPLOADED_FILE);
         $entity->setOriginal($uploadedFile->getClientOriginalName());
-        $entity->setPath($this->getUploadRootDir());
-        
-        if ($keepOriginalFileName) {
-            $fileName = $entity->getOriginal();
-            $entity->setFileName($entity->getOriginal());
-        } else {
-            $ext = $uploadedFile->guessExtension() ? $uploadedFile->guessExtension() : 'bin';
-            $fileName = md5(rand(1, 9999999).time().$uploadedFile->getClientOriginalName()).'.'.$ext;
+        $entity->setFileName($this->getFilename($uploadedFile, $keepOriginalFileName));
+
+        if (!$filesystem) {
+            $filesystem = $this->filesystemMap->getDefault();
         }
 
-        $entity->setFileName($fileName);
-
-        $uploadedFile->move($this->getUploadRootDir(), $entity->getFileName());
+        $storagePath = sprintf('%s/%s', $this->getUploadPath(), $entity->getFilename());
         
-        $webPath = sprintf('/%s/%s', $this->getUploadDir(), $entity->getFileName());
-        $entity->setWebPath($webPath);
+        $entity->setStorage($filesystem->getName());
+        $entity->setPath($storagePath);
+
+        //Upload file to storage
+        if (!$filesystem->has($entity->getFileName())) {
+            $filesystem->write($entity->getPath(), file_get_contents($uploadedFile->getPathname()));
+        }
 
         return $entity;
     }
@@ -170,12 +166,12 @@ class MediaManager
      */
     public function delete(MediaInterface $entity, $withFlush = false)
     {
-        if (!unlink($entity->getPath() . '/' . $entity->getFileName())) {
-            throw new \RuntimeException('Cannot delete file');
-        }
 
         $this->eventDispatcher->dispatch(MediaEvents::DELETE_MEDIA, new MediaEvent($entity));
         
+        $filesystem = $this->filesystemMap->get($entity->getStorage());
+        $filesystem->delete($entity->getPath());
+
         $this->entityManager->remove($entity);
 
         if ($withFlush) {
@@ -183,27 +179,18 @@ class MediaManager
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getUploadDir()
+    public function getFilename(UploadedFile $uploadedFile, $keepOriginalFileName)
     {
-        return $this->options['uploader']['media_path'];
+        if ($keepOriginalFileName) {
+            $fileName = $uploadedFile->getClientOriginalName();
+        } else {
+            $ext = $uploadedFile->guessExtension() ? $uploadedFile->guessExtension() : 'bin';
+            $fileName = md5(rand(1, 9999999).time().$uploadedFile->getClientOriginalName()).'.'.$ext;
+        }
+
+        return $fileName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUploadRootDir()
-    {
-        $basePath = sprintf('%s/../%s/%s',
-            $this->kernel->getRootDir(),
-            $this->options['uploader']['www_root'],
-            $this->options['uploader']['media_path']
-        );
-
-        return $basePath;
-    }
 
     /**
      * @return string
@@ -211,14 +198,6 @@ class MediaManager
     public function getClass()
     {
         return $this->class;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
     }
 
     /**
