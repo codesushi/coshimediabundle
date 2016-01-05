@@ -132,10 +132,8 @@ class MediaManager
             $filesystem = $this->filesystemMap->getDefault();
         }
 
-        $storagePath = sprintf('%s/%s', $this->getUploadPath(), $entity->getFilename());
-
         $entity->setStorage($filesystem->getName());
-        $entity->setPath($storagePath);
+        $entity->setPath($entity->getFilename());
 
         //Upload file to storage
         if (!$filesystem->has($entity->getFileName())) {
