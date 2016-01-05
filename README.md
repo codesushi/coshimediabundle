@@ -13,16 +13,36 @@ Events are dispached after each media manager service action.
 Setup
 ------
 
-1. Create your media bundle for example AcmeMediaBudle
-2. In this bundle create Media entity which extends Coshi\MediaBundle\Entity\Media, add id column and mapping of your choice
-3. Add CoshiMediaBundle configuration to your appliaction's config.yml see config reference. Note that you have to create media_path in your web_root and give them proper permissions
-4. Add CoshiMediaBundle to your AppKernel.php
-5. Update your database schema
-6. Add desired entities which have attached media and implement interfaces Coshi\MediaBundle\Model\MediaInterface for desired entity 
-7. Now you can use coshi_media.media_manager service to perform file upload as simple as 
+0. Create your media bundle for example AcmeMediaBudle - [optional step - only creation of entity is required]
+1. Create Media entity which extends Coshi\MediaBundle\Entity\Media, add id column and mapping of your choice [ if bundle had been created create entity in that bundle ]
+2. Add CoshiMediaBundle configuration to your appliaction's config.yml see config reference. Note that you have to create media_path in your web_root and give them proper permissions
+3. Add CoshiMediaBundle to your AppKernel.php
+4. Update your database schema
+5. Add desired entities which have attached media and implement interfaces Coshi\MediaBundle\Model\MediaInterface for desired entity 
+6. Now you can use coshi_media.media_manager service to perform file upload as simple as 
 
         $this->get('coshi_media.media_manager')->create($uploadedFileObject);
         $this->getDoctrine()->getManager()->flush();
+
+Minimal configuration for storing files on local filesystem
+-----------------------------------------------------------
+
+    coshi_media:
+        media_class: AppBundle\Entity\Media
+
+        #Adapters definiton
+        adapters:
+            local:
+                directory: media
+                create: true
+
+        filesystems:
+            local:
+                adapter: local
+
+        filesystem_default: local
+
+Currentluy only Amazon S3 and Local filesystem are supported.
 
 Configuration reference
 ----------------
