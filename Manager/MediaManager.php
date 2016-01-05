@@ -4,6 +4,7 @@ namespace Coshi\MediaBundle\Manager;
 
 use Coshi\MediaBundle\Entity\Media;
 use Coshi\MediaBundle\Event\MediaEvent;
+use Coshi\MediaBundle\FilesystemMap;
 use Coshi\MediaBundle\MediaEvents;
 use Coshi\MediaBundle\Model\MediaInterface;
 
@@ -14,7 +15,6 @@ use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-use Coshi\MediaBundle\FilesystemMap;
 
 class MediaManager
 {
@@ -46,12 +46,6 @@ class MediaManager
      */
     protected $options;
 
-    /**
-     * @param EntityManager $em
-     * @param KernelInterface $kernel
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param array $options
-     */
     public function __construct(
         EntityManager $em,
         EventDispatcherInterface $eventDispatcher,
@@ -70,24 +64,12 @@ class MediaManager
         ;
     }
 
-    /**
-     * @return object
-     */
     public function getClassInstance()
     {
         $class = $this->class;
         return new $class();
     }
 
-    /**
-     * @param UploadedFile $file
-     * @param MediaInterface $entity
-     * @param bool $withFlush
-     * @param bool $move
-     * @param Event $eventCalled
-     *
-     * @return MediaInterface
-     */
     public function create(UploadedFile $file, MediaInterface $entity = null, Filesystem $filesystem = null, $withFlush = false, $keepOriginalFileName = false)
     {
         if (!$entity instanceof MediaInterface) {
@@ -95,7 +77,7 @@ class MediaManager
         }
 
         $entity = $this->upload($file, $entity, $filesystem, $keepOriginalFileName);
-        
+
         $this->entityManager->persist($entity);
 
         if ($withFlush) {
@@ -111,11 +93,15 @@ class MediaManager
      * @param UploadedFile $file
      * @param MediaInterface $entity
      * @param bool $withFlush
+     * @param bool $keepFile should we remove old file?
      * @return MediaInterface
      */
-    public function update(UploadedFile $file, MediaInterface $entity, $withFlush = false)
+    public function update(UploadedFile $file, MediaInterface $entity, $withFlush = false, $keepFile = false)
     {
         if (null !== $file) {
+            if (!$keepFile) {
+                $this->filesystemMap->get($entity->getStorage())->delete($entity->getPath());
+            }
             $entity = $this->upload($file, $entity);
         }
 
@@ -147,7 +133,7 @@ class MediaManager
         }
 
         $storagePath = sprintf('%s/%s', $this->getUploadPath(), $entity->getFilename());
-        
+
         $entity->setStorage($filesystem->getName());
         $entity->setPath($storagePath);
 
@@ -168,7 +154,7 @@ class MediaManager
     {
 
         $this->eventDispatcher->dispatch(MediaEvents::DELETE_MEDIA, new MediaEvent($entity));
-        
+
         $filesystem = $this->filesystemMap->get($entity->getStorage());
         $filesystem->delete($entity->getPath());
 
