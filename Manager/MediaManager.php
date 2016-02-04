@@ -2,6 +2,7 @@
 
 namespace Coshi\MediaBundle\Manager;
 
+use Coshi\MediaBundle\Adapter\UrlInterface;
 use Coshi\MediaBundle\Entity\Media;
 use Coshi\MediaBundle\Event\MediaEvent;
 use Coshi\MediaBundle\FilesystemMap;
@@ -41,6 +42,7 @@ class MediaManager
     protected $filesystemMap;
 
     protected $uploadPath;
+
     /**
      * @var array
      */
@@ -77,6 +79,31 @@ class MediaManager
         }
 
         $entity = $this->upload($file, $entity, $filesystem, $keepOriginalFileName);
+
+        $this->entityManager->persist($entity);
+
+        if ($withFlush) {
+            $this->entityManager->flush();
+        }
+
+        $this->eventDispatcher->dispatch(MediaEvents::CREATE_MEDIA, new MediaEvent($entity));
+
+        return $entity;
+    }
+
+    public function createExternalVideo($url, MediaInterface $entity = null, $withFlush = false)
+    {
+        if (!$entity instanceof MediaInterface) {
+            $entity = $this->getClassInstance();
+        }
+
+        $entity->setType(Media::EXTERNAL_VIDEO);
+        $entity->setOriginal($url);
+        $entity->setFileName($url);
+        $entity->setMediaUrl($url);
+        $entity->setPath('/');
+        $entity->setStorage('external');
+        $entity->setSize(0);
 
         $this->entityManager->persist($entity);
 
@@ -130,6 +157,7 @@ class MediaManager
 
         if (!$filesystem) {
             $filesystem = $this->filesystemMap->getDefault();
+
         }
 
         $entity->setStorage($filesystem->getName());
@@ -137,7 +165,12 @@ class MediaManager
 
         //Upload file to storage
         if (!$filesystem->has($entity->getFileName())) {
-            $filesystem->write($entity->getPath(), file_get_contents($uploadedFile->getPathname()));
+            $filesystem->write($entity->getFilename(), file_get_contents($uploadedFile->getPathname()));
+        }
+
+        // keep backward compatibility
+        if ($filesystem->getAdapter() instanceof UrlInterface) {
+            $entity->setPath(trim($filesystem->getAdapter()->getUrl(''), '/'));
         }
 
         return $entity;
@@ -190,5 +223,19 @@ class MediaManager
     public function getRepository()
     {
         return $this->repository;
+    }
+
+    /**
+     * getFilesystemFor
+     *
+     * returns filesystem that was used for storing entity
+     *
+     * @param Media $entity
+     * @access public
+     * @return \Gaufrette\Filesystem
+     */
+    public function getFilesystemFor(Media $entity)
+    {
+        return $this->filesystemMap->get($entity->getStorage());
     }
 }

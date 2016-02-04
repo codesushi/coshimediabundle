@@ -8,7 +8,7 @@ class Media implements MediaInterface
 {
     const UPLOADED_FILE = 1;
     const EXTERNAL_MEDIA = 2;
-    const YT_VIDEO = 3;
+    const EXTERNAL_VIDEO = 3;
 
     /**
      * @var int
@@ -194,7 +194,7 @@ class Media implements MediaInterface
      * Set mimeType
      *
      * @param string $mimeType
-     * 
+     *
      * @return $this
      */
     public function setMimeType($mimeType)
@@ -217,7 +217,7 @@ class Media implements MediaInterface
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * 
+     *
      * @return $this
      */
     public function setCreatedAt($createdAt)
@@ -240,7 +240,7 @@ class Media implements MediaInterface
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * 
+     *
      * @return $this
      */
     public function setUpdatedAt($updatedAt)
@@ -263,7 +263,7 @@ class Media implements MediaInterface
      * Set original
      *
      * @param string $original
-     * 
+     *
      * @return $this
      */
     public function setOriginal($original)
@@ -286,7 +286,7 @@ class Media implements MediaInterface
      * Set path
      *
      * @param string $path
-     * 
+     *
      * @return $this
      */
     public function setPath($path)
@@ -320,6 +320,11 @@ class Media implements MediaInterface
     public function isPdf()
     {
         return $this->checkMime('pdf');
+    }
+
+    public function isExtrernalVideo()
+    {
+        return $this->getType() == self::EXTERNAL_VIDEO;
     }
 
     protected function checkMime($mime)

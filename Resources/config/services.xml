@@ -27,10 +27,11 @@
     </service>
 
     <!-- File systems services -->
-    <service  id="coshi_media.filesystem_map" class="Coshi\MediaBundle\FilesystemMap">
-            <argument /> <!-- files systems arra -->
+    <service id="coshi_media.filesystem_map" class="Coshi\MediaBundle\FilesystemMap">
+            <argument /> <!-- files systems array -->
             <argument /> <!-- default file system key -->
     </service>
+
     <service id="coshi_media.filesystem" class="Coshi\MediaBundle\Filesystem" abstract="true">
         <argument /> <!-- Adapter -->
         <argument /> <!-- filesystem name -->
