@@ -187,7 +187,7 @@ class MediaManager
         $this->eventDispatcher->dispatch(MediaEvents::DELETE_MEDIA, new MediaEvent($entity));
 
         $filesystem = $this->filesystemMap->get($entity->getStorage());
-        $filesystem->delete($entity->getPath());
+        $filesystem->delete($entity->getFileName());
 
         $this->entityManager->remove($entity);
 
